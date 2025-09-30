@@ -5,8 +5,7 @@ import com.moonstack.dtos.request.EmployeeDetailsRequest;
 import com.moonstack.entity.*;
 import com.moonstack.mapper.*;
 import com.moonstack.repository.*;
-import com.moonstack.service.EmployeeDetailsService;
-import com.moonstack.service.UserService;
+import com.moonstack.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -20,34 +19,34 @@ public class EmployeeDetailsServiceImpl implements EmployeeDetailsService {
     private UserService userService;
 
     @Autowired
-    private WorkInfoRepository workInfoRepository;
+    private WorkInfoService workInfoService;
 
     @Autowired
-    private HierarchyInfoRepository hierarchyInfoRepository;
+    private HierarchyInfoService hierarchyInfoService;
 
     @Autowired
-    private PersonalDetailRepository personalDetailRepository;
+    private PersonalDetailService personalDetailService;
 
     @Autowired
-    private IdentityInfoRepository identityInfoRepository;
+    private IdentityInfoService identityInfoService;
 
     @Autowired
-    private ContactDetailRepository contactDetailRepository;
+    private ContactDetailService contactDetailService;
 
     @Autowired
-    private SystemFieldRepository systemFieldRepository;
+    private SystemFieldService systemFieldService;
 
     @Autowired
-    private WorkExperienceRepository workExperienceRepository;
+    private WorkExperienceService workExperienceService;
 
     @Autowired
-    private EducationDetailRepository educationDetailRepository;
+    private EducationDetailService educationDetailService;
 
     @Autowired
-    private DependentDetailRepository dependentDetailRepository;
+    private DependentDetailService dependentDetailService;
 
     @Autowired
-    private RelatedFormRepository relatedFormRepository;
+    private RelatedFormService relatedFormService;
 
 
     @Override
@@ -59,57 +58,57 @@ public class EmployeeDetailsServiceImpl implements EmployeeDetailsService {
 
         WorkInfo workInfo = WorkInfoMapper.workInfoRequestIntoWorkInfo(request.getWorkInfo());
         workInfo.setUser(user);
-        workInfoRepository.save(workInfo);
+        workInfoService.addWorkInfo(workInfo);
 
         List<HierarchyInfo> hierarchyInfos = request.getHierarchyInfos().stream()
                                                 .map(hi -> {
                                                     HierarchyInfo hierarchyInfo = HierarchyInfoMapper.hierarchyInfoRequestIntoHierarchyInfo(hi);
                                                     hierarchyInfo.setUser(user);
-                                                    return hierarchyInfoRepository.save(hierarchyInfo);
+                                                    return hierarchyInfoService.addHierarchyInfo(hierarchyInfo);
                                                 }).toList();
 
         PersonalDetail personalDetail = PersonalDetailMapper.personalDetailRequestIntoPersonalDetail(request.getPersonalDetail());
         personalDetail.setUser(user);
-        personalDetailRepository.save(personalDetail);
+        personalDetailService.addPersonalDetail(personalDetail);
 
         IdentityInfo identityInfo = IdentityInfoMapper.identityInfoRequestIntoIdentityInfo(request.getIdentityInfo());
         identityInfo.setUser(user);
-        identityInfoRepository.save(identityInfo);
+        identityInfoService.addIdentityInfo(identityInfo);
 
         ContactDetail contactDetail = ContactDetailMapper.contactDetailRequestIntoContactDetail(request.getContactDetail());
         contactDetail.setUser(user);
-        contactDetailRepository.save(contactDetail);
+        contactDetailService.addContactDetails(contactDetail);
 
         SystemField systemField = SystemFieldMapper.systemFieldRequestIntoSystemField(request.getSystemField());
         systemField.setUser(user);
-        systemFieldRepository.save(systemField);
+        systemFieldService.addSystemField(systemField);
 
         List<WorkExperience> workExperiences = request.getWorkExperience().stream()
                                                 .map(we ->{
                                                     WorkExperience workExperience =  WorkExperienceMapper.workExperienceRequestIntoWorkExperience(we);
                                                     workExperience.setUser(user);
-                                                    return workExperienceRepository.save(workExperience);
+                                                    return workExperienceService.addWorkExperience(workExperience);
                                                 }).toList();
 
         List<EducationDetail> educationDetails = request.getEducationDetails().stream()
                                                 .map(ed -> {
                                                     EducationDetail educationDetail = EducationDetailMapper.educationDetailRequestIntoEducationDetail(ed);
                                                     educationDetail.setUser(user);
-                                                    return educationDetailRepository.save(educationDetail);
+                                                    return educationDetailService.addEducationalDetail(educationDetail);
                                                 }).toList();
 
         List<DependentDetail> dependentDetails = request.getDependentDetails().stream()
                                                 .map(dd -> {
                                                     DependentDetail dependentDetail = DependentDetailMapper.dependentDetailRequestIntoDependentDetail(dd);
                                                     dependentDetail.setUser(user);
-                                                    return dependentDetailRepository.save(dependentDetail);
+                                                    return dependentDetailService.addDependentDetails(dependentDetail);
                                                 }).toList();
 
         List<RelatedForm> relatedForms = request.getRelatedForms().stream()
                                                 .map(rf -> {
                                                     RelatedForm relatedForm = RelatedFormMapper.relatedFormRequestIntoRelatedForm(rf);
                                                     relatedForm.setUser(user);
-                                                    return relatedFormRepository.save(relatedForm);
+                                                    return relatedFormService.addRelatedForm(relatedForm);
                                                 }).toList();
 //
 //        user.setWorkInfo(workInfo);
