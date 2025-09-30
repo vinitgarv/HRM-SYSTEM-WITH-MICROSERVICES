@@ -1,0 +1,59 @@
+spring:
+  config:
+    import: "configserver:"
+  profiles:
+    active: dev
+  application:
+    name: API-SERVICE
+  zipkin:
+    base-url: http://localhost:9411
+    enabled: true
+  service:
+    name: ${spring.application.name}
+  cloud:
+    gateway:
+      routes:
+        - id: USER-SERVICE
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user/**
+          filters:
+            - StripPrefix=1
+        - id: ADMIN-SERVICE
+          uri: lb://ADMIN-SERVICE
+          predicates:
+            - Path=/admin/**
+          filters:
+            - StripPrefix=1
+        - id: common-service
+          uri: lb://COMMON-SERVICE
+          predicates:
+            - Path=/common/**
+          filters:
+            - StripPrefix=1
+    config:
+      discovery:
+        enabled: true
+        service-id: CONFIG-SERVER
+server:
+  port: 8765
+
+management:
+  endpoints:
+    web:
+      discovery:
+        enabled: false
+      exposure:
+        include: "*"
+  tracing:
+    sampling:
+      probability: 1.0
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
