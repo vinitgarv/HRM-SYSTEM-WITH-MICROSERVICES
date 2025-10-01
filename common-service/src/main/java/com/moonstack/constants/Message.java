@@ -124,4 +124,12 @@ public class Message
     public static String  IDENTITY_INFO = "Identity Info";
     public static String  SYSTEM_FIELD = "System Field";
     public static String  CONTACT_DETAIL = "Contact Detail";
+
+    // placeholders
+    public static String  USER_NAME_PLACEHOLDER = "<USER_NAME>";
+    public static String  URL_PLACEHOLDER = "<URL>";
+    public static String  TEMP_PASSWORD_PLACEHOLDER = "<TEMP_PASSWORD>";
+    public static String  SENDER_NAME_PLACEHOLDER = "<SENDER_NAME>";
+
+    public static String SENDER_NAME = "Moonstack Pvt. Ltd.";
 }
