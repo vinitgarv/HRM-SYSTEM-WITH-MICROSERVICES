@@ -55,6 +55,8 @@ public class EmployeeDetailsServiceImpl implements EmployeeDetailsService {
 
         User user = userService.findById(userId);
 
+        request.validate();
+
         userService.add(user);
 
         WorkInfo workInfo = WorkInfoMapper.workInfoRequestIntoWorkInfo(request.getWorkInfo());
