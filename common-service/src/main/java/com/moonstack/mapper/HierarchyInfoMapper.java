@@ -1,7 +1,9 @@
 package com.moonstack.mapper;
 
+import com.moonstack.dtos.request.EducationDetailRequest;
 import com.moonstack.dtos.request.HierarchyInfoRequest;
 import com.moonstack.dtos.response.HierarchyInfoResponse;
+import com.moonstack.entity.EducationDetail;
 import com.moonstack.entity.HierarchyInfo;
 import com.moonstack.utils.Helper;
 
@@ -15,6 +17,10 @@ public class HierarchyInfoMapper
                 .isActive(true)
                 .deleted(false)
                 .build();
+    }
+
+    public static void updateFromRequest(HierarchyInfoRequest request, HierarchyInfo hierarchyInfo) {
+      hierarchyInfo.setReportingManager(request.getReportingManager());
     }
 
     public static HierarchyInfoResponse hierarchyInfoIntoHierarchyInfoResponse(HierarchyInfo hierarchyInfo)

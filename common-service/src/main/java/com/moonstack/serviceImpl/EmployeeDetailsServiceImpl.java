@@ -1,7 +1,7 @@
 package com.moonstack.serviceImpl;
 
 import com.moonstack.constants.Message;
-import com.moonstack.dtos.request.EmployeeDetailsRequest;
+import com.moonstack.dtos.request.*;
 import com.moonstack.dtos.response.EmployeeDetailsResponse;
 import com.moonstack.dtos.response.UserResponse;
 import com.moonstack.entity.*;
@@ -113,153 +113,156 @@ public class EmployeeDetailsServiceImpl implements EmployeeDetailsService {
     }
 
     @Override
-    @Transactional
     public EmployeeDetailsResponse update(String id, EmployeeDetailsRequest request) {
-
         User user = userService.findById(id);
-
-        if (user.getWorkInfo() != null) {
-            WorkInfoMapper.updateFromRequest(request.getWorkInfo(), user.getWorkInfo());
-        } else {
-            WorkInfo workInfo = WorkInfoMapper.workInfoRequestIntoWorkInfo(request.getWorkInfo());
-            workInfo.setUser(user);
-            user.setWorkInfo(workInfo);
-        }
-
-        user.getHierarchyInfos().clear();
-        request.getHierarchyInfos().forEach(hi -> {
-            HierarchyInfo hierarchyInfo = HierarchyInfoMapper.hierarchyInfoRequestIntoHierarchyInfo(hi);
-            hierarchyInfo.setUser(user);
-            user.getHierarchyInfos().add(hierarchyInfo);
-        });
-
-        if (user.getPersonalDetail() != null) {
-            PersonalDetailMapper.updateFromRequest(request.getPersonalDetail(), user.getPersonalDetail());
-        } else {
-            PersonalDetail personalDetail = PersonalDetailMapper.personalDetailRequestIntoPersonalDetail(request.getPersonalDetail());
-            personalDetail.setUser(user);
-            user.setPersonalDetail(personalDetail);
-        }
-
-        if (user.getIdentityInfo() != null) {
-            IdentityInfoMapper.updateFromRequest(request.getIdentityInfo(), user.getIdentityInfo());
-        } else {
-            IdentityInfo identityInfo = IdentityInfoMapper.identityInfoRequestIntoIdentityInfo(request.getIdentityInfo());
-            identityInfo.setUser(user);
-            user.setIdentityInfo(identityInfo);
-        }
-
-        if (user.getContactDetail() != null) {
-            ContactDetailMapper.updateFromRequest(request.getContactDetail(), user.getContactDetail());
-        } else {
-            ContactDetail contactDetail = ContactDetailMapper.contactDetailRequestIntoContactDetail(request.getContactDetail());
-            contactDetail.setUser(user);
-            user.setContactDetail(contactDetail);
-        }
-
-        if (user.getSystemField() != null) {
-            SystemFieldMapper.updateFromRequest(request.getSystemField(), user.getSystemField());
-        } else {
-            SystemField systemField = SystemFieldMapper.systemFieldRequestIntoSystemField(request.getSystemField());
-            systemField.setUser(user);
-            user.setSystemField(systemField);
-        }
-
-        user.getWorkExperiences().clear();
-        request.getWorkExperience().forEach(we -> {
-            WorkExperience workExperience = WorkExperienceMapper.workExperienceRequestIntoWorkExperience(we);
-            workExperience.setUser(user);
-            user.getWorkExperiences().add(workExperience);
-        });
-
-        user.getEducationDetails().clear();
-        request.getEducationDetails().forEach(ed -> {
-            EducationDetail educationDetail = EducationDetailMapper.educationDetailRequestIntoEducationDetail(ed);
-            educationDetail.setUser(user);
-            user.getEducationDetails().add(educationDetail);
-        });
-
-        user.getDependentDetails().clear();
-        request.getDependentDetails().forEach(dd -> {
-            DependentDetail dependentDetail = DependentDetailMapper.dependentDetailRequestIntoDependentDetail(dd);
-            dependentDetail.setUser(user);
-            user.getDependentDetails().add(dependentDetail);
-        });
-
-        user.getRelatedForms().clear();
-        request.getRelatedForms().forEach(rf -> {
-            RelatedForm relatedForm = RelatedFormMapper.relatedFormRequestIntoRelatedForm(rf);
-            relatedForm.setUser(user);
-            user.getRelatedForms().add(relatedForm);
-        });
-
+        EmployeeDetailMapper.updateUserFromRequest(user, request);
         userService.add(user);
-
-        return EmployeeDetailsResponse.builder()
-
-                .userResponse(UserResponse.builder()
-                        .id(user.getId())
-                        .email(user.getEmail())
-                        .firstName(user.getFirstName())
-                        .lastName(user.getLastName())
-                        .build())
-                .workInfo(WorkInfoMapper.workInfoIntoWorkInfoResponse(user.getWorkInfo()))
-                .hierarchyInfos(user.getHierarchyInfos().stream()
-                        .map(HierarchyInfoMapper::hierarchyInfoIntoHierarchyInfoResponse)
-                        .toList())
-                .personalDetail(PersonalDetailMapper.personalDetailIntoPersonalDetailResponse(user.getPersonalDetail()))
-                .identityInfo(IdentityInfoMapper.identityInfoIntoIdentityInfoResponse(user.getIdentityInfo()))
-                .contactDetail(ContactDetailMapper.contactDetailIntoContactDetailResponse(user.getContactDetail()))
-                .systemField(SystemFieldMapper.systemFieldIntoSystemFieldReason(user.getSystemField()))
-                .workExperience(user.getWorkExperiences().stream()
-                        .map(WorkExperienceMapper::workExperienceIntoWorkExperienceResponse)
-                        .toList())
-                .educationDetails(user.getEducationDetails().stream()
-                        .map(EducationDetailMapper::educationDetailIntoEducationDetailResponse)
-                        .toList())
-                .dependentDetails(user.getDependentDetails().stream()
-                        .map(DependentDetailMapper::dependentDetailIntoDependentDetailResponse)
-                        .toList())
-                .relatedForms(user.getRelatedForms().stream()
-                        .map(RelatedFormMapper::relatedFormIntoRelatedFormResponse)
-                        .toList())
-                .build();
+        return EmployeeDetailMapper.toResponse(user);
     }
+
+
+//    @Override
+//    @Transactional
+//    public EmployeeDetailsResponse update(String id, EmployeeDetailsRequest request) {
+//        User user = userService.findById(id);
+//
+//        if (user.getWorkInfo() != null) {
+//            WorkInfoMapper.updateFromRequest(request.getWorkInfo(), user.getWorkInfo());
+//        } else if (request.getWorkInfo() != null) {
+//            WorkInfo wi = WorkInfoMapper.workInfoRequestIntoWorkInfo(request.getWorkInfo());
+//            wi.setUser(user);
+//            user.setWorkInfo(wi);
+//        }
+//
+//        if (user.getPersonalDetail() != null) {
+//            PersonalDetailMapper.updateFromRequest(request.getPersonalDetail(), user.getPersonalDetail());
+//        } else if (request.getPersonalDetail() != null) {
+//            PersonalDetail pd = PersonalDetailMapper.personalDetailRequestIntoPersonalDetail(request.getPersonalDetail());
+//            pd.setUser(user);
+//            user.setPersonalDetail(pd);
+//        }
+//
+//        if (user.getIdentityInfo() != null) {
+//            IdentityInfoMapper.updateFromRequest(request.getIdentityInfo(), user.getIdentityInfo());
+//        } else if (request.getIdentityInfo() != null) {
+//            IdentityInfo ii = IdentityInfoMapper.identityInfoRequestIntoIdentityInfo(request.getIdentityInfo());
+//            ii.setUser(user);
+//            user.setIdentityInfo(ii);
+//        }
+//
+//        if (user.getContactDetail() != null) {
+//            ContactDetailMapper.updateFromRequest(request.getContactDetail(), user.getContactDetail());
+//        } else if (request.getContactDetail() != null) {
+//            ContactDetail cd = ContactDetailMapper.contactDetailRequestIntoContactDetail(request.getContactDetail());
+//            cd.setUser(user);
+//            user.setContactDetail(cd);
+//        }
+//
+//        if (user.getSystemField() != null) {
+//            SystemFieldMapper.updateFromRequest(request.getSystemField(), user.getSystemField());
+//        } else if (request.getSystemField() != null) {
+//            SystemField sf = SystemFieldMapper.systemFieldRequestIntoSystemField(request.getSystemField());
+//            sf.setUser(user);
+//            user.setSystemField(sf);
+//        }
+//
+//        if (request.getWorkExperience() != null) {
+//            user.getWorkExperiences().clear();
+//            user.getWorkExperiences().addAll(
+//                    request.getWorkExperience().stream()
+//                            .map(req -> {
+//                                WorkExperience we = WorkExperienceMapper.workExperienceRequestIntoWorkExperience(req);
+//                                we.setUser(user);
+//                                return we;
+//                            }).toList()
+//            );
+//        }
+//
+//        if (request.getEducationDetails() != null) {
+//            user.getEducationDetails().clear();
+//            user.getEducationDetails().addAll(
+//                    request.getEducationDetails().stream()
+//                            .map(req -> {
+//                                EducationDetail ed = EducationDetailMapper.educationDetailRequestIntoEducationDetail(req);
+//                                ed.setUser(user);
+//                                return ed;
+//                            }).toList()
+//            );
+//        }
+//
+//        if (request.getDependentDetails() != null) {
+//            user.getDependentDetails().clear();
+//            user.getDependentDetails().addAll(
+//                    request.getDependentDetails().stream()
+//                            .map(req -> {
+//                                DependentDetail dd = DependentDetailMapper.dependentDetailRequestIntoDependentDetail(req);
+//                                dd.setUser(user);
+//                                return dd;
+//                            }).toList()
+//            );
+//        }
+//
+//        if (request.getRelatedForms() != null) {
+//            user.getRelatedForms().clear();
+//            user.getRelatedForms().addAll(
+//                    request.getRelatedForms().stream()
+//                            .map(req -> {
+//                                RelatedForm rf = RelatedFormMapper.relatedFormRequestIntoRelatedForm(req);
+//                                rf.setUser(user);
+//                                return rf;
+//                            }).toList()
+//            );
+//        }
+//
+//        if (request.getHierarchyInfos() != null) {
+//            user.getHierarchyInfos().clear();
+//            user.getHierarchyInfos().addAll(
+//                    request.getHierarchyInfos().stream()
+//                            .map(req -> {
+//                                HierarchyInfo hi = HierarchyInfoMapper.hierarchyInfoRequestIntoHierarchyInfo(req);
+//                                hi.setUser(user);
+//                                return hi;
+//                            }).toList()
+//            );
+//        }
+//
+//        userService.add(user);
+//
+//        return EmployeeDetailsResponse.builder()
+//                .userResponse(UserResponse.builder()
+//                        .id(user.getId())
+//                        .email(user.getEmail())
+//                        .firstName(user.getFirstName())
+//                        .lastName(user.getLastName())
+//                        .build())
+//                .workInfo(WorkInfoMapper.workInfoIntoWorkInfoResponse(user.getWorkInfo()))
+//                .hierarchyInfos(user.getHierarchyInfos().stream()
+//                        .map(HierarchyInfoMapper::hierarchyInfoIntoHierarchyInfoResponse)
+//                        .toList())
+//                .personalDetail(PersonalDetailMapper.personalDetailIntoPersonalDetailResponse(user.getPersonalDetail()))
+//                .identityInfo(IdentityInfoMapper.identityInfoIntoIdentityInfoResponse(user.getIdentityInfo()))
+//                .contactDetail(ContactDetailMapper.contactDetailIntoContactDetailResponse(user.getContactDetail()))
+//                .systemField(SystemFieldMapper.systemFieldIntoSystemFieldReason(user.getSystemField()))
+//                .workExperience(user.getWorkExperiences().stream()
+//                        .map(WorkExperienceMapper::workExperienceIntoWorkExperienceResponse)
+//                        .toList())
+//                .educationDetails(user.getEducationDetails().stream()
+//                        .map(EducationDetailMapper::educationDetailIntoEducationDetailResponse)
+//                        .toList())
+//                .dependentDetails(user.getDependentDetails().stream()
+//                        .map(DependentDetailMapper::dependentDetailIntoDependentDetailResponse)
+//                        .toList())
+//                .relatedForms(user.getRelatedForms().stream()
+//                        .map(RelatedFormMapper::relatedFormIntoRelatedFormResponse)
+//                        .toList())
+//                .build();
+//    }
 
 
     @Override
     public EmployeeDetailsResponse getById(String id) {
         User user = userService.getById(id);
-
-        return EmployeeDetailsResponse.builder()
-                .userResponse(UserResponse.builder()
-                        .id(user.getId())
-                        .email(user.getEmail())
-                        .firstName(user.getFirstName())
-                        .lastName(user.getLastName())
-                        .build())
-
-                .workInfo(WorkInfoMapper.workInfoIntoWorkInfoResponse(user.getWorkInfo()))
-                .hierarchyInfos(user.getHierarchyInfos().stream()
-                        .map(HierarchyInfoMapper::hierarchyInfoIntoHierarchyInfoResponse)
-                        .toList())
-                .personalDetail(PersonalDetailMapper.personalDetailIntoPersonalDetailResponse(user.getPersonalDetail()))
-                .identityInfo(IdentityInfoMapper.identityInfoIntoIdentityInfoResponse(user.getIdentityInfo()))
-                .contactDetail(ContactDetailMapper.contactDetailIntoContactDetailResponse(user.getContactDetail()))
-                .systemField(SystemFieldMapper.systemFieldIntoSystemFieldReason(user.getSystemField()))
-                .workExperience(user.getWorkExperiences().stream()
-                        .map(WorkExperienceMapper::workExperienceIntoWorkExperienceResponse)
-                        .toList())
-                .educationDetails(user.getEducationDetails().stream()
-                        .map(EducationDetailMapper::educationDetailIntoEducationDetailResponse)
-                        .toList())
-                .dependentDetails(user.getDependentDetails().stream()
-                        .map(DependentDetailMapper::dependentDetailIntoDependentDetailResponse)
-                        .toList())
-                .relatedForms(user.getRelatedForms().stream()
-                        .map(RelatedFormMapper::relatedFormIntoRelatedFormResponse)
-                        .toList())
-                .build();
+        return EmployeeDetailMapper.toResponse(user);
     }
 
 }
