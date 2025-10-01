@@ -1,6 +1,5 @@
 package com.moonstack.mapper;
 
-
 import com.moonstack.dtos.request.ContactDetailRequest;
 import com.moonstack.dtos.response.ContactDetailResponse;
 import com.moonstack.entity.ContactDetail;
@@ -24,6 +23,18 @@ public class ContactDetailMapper
                 .deleted(false)
                 .build();
     }
+
+    public static void updateFromRequest(ContactDetailRequest request, ContactDetail contactDetail) {
+        contactDetail.setWorkPhoneNumber(request.getWorkPhoneNumber());
+        contactDetail.setPersonalMobile(request.getPersonalMobile());
+        contactDetail.setExtension(request.getExtension());
+        contactDetail.setPersonalEmail(request.getPersonalEmail());
+        contactDetail.setSeatingLocation(request.getSeatingLocation());
+        contactDetail.setTag(request.getTag());
+        contactDetail.setPresentAddress(request.getPresentAddress());
+        contactDetail.setPermanentAddress(request.getPermanentAddress());
+    }
+
 
     public static ContactDetailResponse contactDetailIntoContactDetailResponse(ContactDetail contactDetail)
     {

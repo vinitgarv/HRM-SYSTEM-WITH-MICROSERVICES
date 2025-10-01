@@ -20,6 +20,13 @@ public class SystemFieldMapper
                 .build();
     }
 
+    public static void updateFromRequest(SystemFieldRequest request, SystemField systemField) {
+        systemField.setAddedBy(request.getAddedBy());
+        systemField.setModifiedBy(request.getModifiedBy());
+        systemField.setAddedTime(request.getAddedTime());
+        systemField.setModifiedTime(request.getModifiedTime());
+    }
+
     public static SystemFieldResponse systemFieldIntoSystemFieldReason(SystemField systemField)
     {
         return SystemFieldResponse.builder()
