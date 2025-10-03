@@ -20,11 +20,6 @@ public class RelatedFormMapper
                 .build();
     }
 
-    public static void updateFromRequest(RelatedFormRequest request, RelatedForm relatedForm) {
-        relatedForm.setType(request.getType());
-        relatedForm.setDetails(request.getDetails());
-    }
-
     public static RelatedFormResponse relatedFormIntoRelatedFormResponse(RelatedForm relatedForm)
     {
         return RelatedFormResponse.builder()

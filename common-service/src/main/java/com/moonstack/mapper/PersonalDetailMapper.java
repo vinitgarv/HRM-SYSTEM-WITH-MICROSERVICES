@@ -18,13 +18,6 @@ public class PersonalDetailMapper {
                 .build();
     }
 
-    public static void updateFromRequest(PersonalDetailRequest request, PersonalDetail personalDetail) {
-        personalDetail.setDob(request.getDob());
-        personalDetail.setMaritalStatus(request.getMaritalStatus());
-        personalDetail.setAboutMe(request.getAboutMe());
-        personalDetail.setExpertise(request.getExpertise());
-    }
-
     public static PersonalDetailResponse personalDetailIntoPersonalDetailResponse(PersonalDetail personalDetail) {
         return PersonalDetailResponse.builder()
                 .dob(personalDetail.getDob())

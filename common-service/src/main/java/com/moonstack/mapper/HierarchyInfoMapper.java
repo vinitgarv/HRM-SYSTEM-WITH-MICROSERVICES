@@ -19,10 +19,6 @@ public class HierarchyInfoMapper
                 .build();
     }
 
-    public static void updateFromRequest(HierarchyInfoRequest request, HierarchyInfo hierarchyInfo) {
-      hierarchyInfo.setReportingManager(request.getReportingManager());
-    }
-
     public static HierarchyInfoResponse hierarchyInfoIntoHierarchyInfoResponse(HierarchyInfo hierarchyInfo)
     {
         return HierarchyInfoResponse.builder()

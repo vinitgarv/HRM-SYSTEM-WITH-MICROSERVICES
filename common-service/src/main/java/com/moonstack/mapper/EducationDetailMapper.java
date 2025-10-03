@@ -22,13 +22,6 @@ public class EducationDetailMapper
                 .build();
     }
 
-    public static void updateFromRequest(EducationDetailRequest request, EducationDetail educationDetail) {
-        educationDetail.setInstituteName(request.getInstituteName());
-        educationDetail.setDegreeOrDiploma(request.getDegreeOrDiploma());
-        educationDetail.setSpecialization(request.getSpecialization());
-        educationDetail.setCompletionDate(request.getCompletionDate());
-    }
-
     public static EducationDetailResponse educationDetailIntoEducationDetailResponse(EducationDetail educationDetail)
     {
         return EducationDetailResponse.builder()

@@ -24,18 +24,6 @@ public class ContactDetailMapper
                 .build();
     }
 
-    public static void updateFromRequest(ContactDetailRequest request, ContactDetail contactDetail) {
-        contactDetail.setWorkPhoneNumber(request.getWorkPhoneNumber());
-        contactDetail.setPersonalMobile(request.getPersonalMobile());
-        contactDetail.setExtension(request.getExtension());
-        contactDetail.setPersonalEmail(request.getPersonalEmail());
-        contactDetail.setSeatingLocation(request.getSeatingLocation());
-        contactDetail.setTag(request.getTag());
-        contactDetail.setPresentAddress(request.getPresentAddress());
-        contactDetail.setPermanentAddress(request.getPermanentAddress());
-    }
-
-
     public static ContactDetailResponse contactDetailIntoContactDetailResponse(ContactDetail contactDetail)
     {
         return ContactDetailResponse.builder()

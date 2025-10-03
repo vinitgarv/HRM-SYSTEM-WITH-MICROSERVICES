@@ -21,12 +21,6 @@ public class DependentDetailMapper
                 .build();
     }
 
-    public static void updateFromRequest(DependentDetailRequest request, DependentDetail dependentDetail) {
-     dependentDetail.setName(request.getName());
-        dependentDetail.setRelation(request.getRelation());
-        dependentDetail.setDob(request.getDob());
-    }
-
     public static DependentDetailResponse dependentDetailIntoDependentDetailResponse(DependentDetail dependentDetail)
     {
         return DependentDetailResponse.builder()

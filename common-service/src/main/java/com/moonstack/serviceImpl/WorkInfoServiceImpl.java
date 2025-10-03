@@ -1,5 +1,6 @@
 package com.moonstack.serviceImpl;
 
+import com.moonstack.entity.User;
 import com.moonstack.entity.WorkInfo;
 import com.moonstack.repository.WorkInfoRepository;
 import com.moonstack.service.WorkInfoService;
@@ -14,5 +15,10 @@ public class WorkInfoServiceImpl implements WorkInfoService {
     @Override
     public WorkInfo addWorkInfo(WorkInfo workInfo) {
        return repository.save(workInfo);
+    }
+
+    @Override
+    public void delete(User user) {
+        repository.deleteByUser(user);
     }
 }

@@ -84,6 +84,11 @@ public class UserServiceImpl implements UserService
 
     @Override
     public void add(User user) {
-userRepository.save(user);
+       userRepository.save(user);
+    }
+
+    @Override
+    public boolean userExists(String userId) {
+        return userRepository.existsById(userId);
     }
 }

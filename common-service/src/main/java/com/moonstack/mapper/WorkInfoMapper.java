@@ -24,19 +24,6 @@ public class WorkInfoMapper
                 .build();
     }
 
-
-    public static void updateFromRequest(WorkInfoRequest request, WorkInfo workInfo) {
-        workInfo.setDepartment(request.getDepartment());
-        workInfo.setRole(request.getRole());
-        workInfo.setLocation(request.getLocation());
-        workInfo.setEmpType(request.getEmpType());
-        workInfo.setDesignation(request.getDesignation());
-        workInfo.setEmpStatus(request.getEmpStatus());
-        workInfo.setSourceOfHire(request.getSourceOfHire());
-        workInfo.setDateOfJoining(request.getDateOfJoining());
-    }
-
-
     public static WorkInfoResponse workInfoIntoWorkInfoResponse(WorkInfo workInfo)
     {
         return WorkInfoResponse.builder()

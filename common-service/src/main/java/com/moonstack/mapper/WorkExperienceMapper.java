@@ -23,15 +23,6 @@ public class WorkExperienceMapper
                 .build();
     }
 
-    public static void updateFromRequest(WorkExperienceRequest request, WorkExperience workExperience) {
-        workExperience.setCompanyName(request.getCompanyName());
-        workExperience.setJobTitle(request.getJobTitle());
-        workExperience.setFromDate(request.getFromDate());
-        workExperience.setToDate(request.getToDate());
-        workExperience.setJobDescription(request.getJobDescription());
-    }
-
-
     public static WorkExperienceResponse workExperienceIntoWorkExperienceResponse(WorkExperience workExperience)
     {
         return WorkExperienceResponse.builder()
