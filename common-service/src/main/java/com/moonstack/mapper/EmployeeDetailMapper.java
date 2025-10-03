@@ -4,14 +4,11 @@ import com.moonstack.dtos.request.EmployeeDetailsRequest;
 import com.moonstack.dtos.response.EmployeeDetailsResponse;
 import com.moonstack.dtos.response.UserResponse;
 import com.moonstack.entity.*;
-
 import java.util.ArrayList;
 
 public class EmployeeDetailMapper {
 
     public static void updateUserFromRequest(User user, EmployeeDetailsRequest request) {
-
-        // --- one-to-one mappings ---
         if (request.getWorkInfo() != null) {
             if (user.getWorkInfo() != null) {
                 WorkInfoMapper.updateFromRequest(request.getWorkInfo(), user.getWorkInfo());
@@ -62,16 +59,6 @@ public class EmployeeDetailMapper {
             }
         }
 
-        // --- one-to-many mappings (lists) ---
-        updateWorkExperiences(user, request);
-        updateEducationDetails(user, request);
-        updateDependentDetails(user, request);
-        updateRelatedForms(user, request);
-        updateHierarchyInfos(user, request);
-    }
-
-    // --- Work Experiences ---
-    private static void updateWorkExperiences(User user, EmployeeDetailsRequest request) {
         if (request.getWorkExperience() != null) {
             if (user.getWorkExperiences() == null) user.setWorkExperiences(new ArrayList<>());
             user.getWorkExperiences().clear();
@@ -81,10 +68,7 @@ public class EmployeeDetailMapper {
                 user.getWorkExperiences().add(we);
             });
         }
-    }
 
-    // --- Education Details ---
-    private static void updateEducationDetails(User user, EmployeeDetailsRequest request) {
         if (request.getEducationDetails() != null) {
             if (user.getEducationDetails() == null) user.setEducationDetails(new ArrayList<>());
             user.getEducationDetails().clear();
@@ -94,10 +78,7 @@ public class EmployeeDetailMapper {
                 user.getEducationDetails().add(ed);
             });
         }
-    }
 
-    // --- Dependent Details ---
-    private static void updateDependentDetails(User user, EmployeeDetailsRequest request) {
         if (request.getDependentDetails() != null) {
             if (user.getDependentDetails() == null) user.setDependentDetails(new ArrayList<>());
             user.getDependentDetails().clear();
@@ -107,10 +88,7 @@ public class EmployeeDetailMapper {
                 user.getDependentDetails().add(dd);
             });
         }
-    }
 
-    // --- Related Forms ---
-    private static void updateRelatedForms(User user, EmployeeDetailsRequest request) {
         if (request.getRelatedForms() != null) {
             if (user.getRelatedForms() == null) user.setRelatedForms(new ArrayList<>());
             user.getRelatedForms().clear();
@@ -120,10 +98,7 @@ public class EmployeeDetailMapper {
                 user.getRelatedForms().add(rf);
             });
         }
-    }
 
-    // --- Hierarchy Infos ---
-    private static void updateHierarchyInfos(User user, EmployeeDetailsRequest request) {
         if (request.getHierarchyInfos() != null) {
             if (user.getHierarchyInfos() == null) user.setHierarchyInfos(new ArrayList<>());
             user.getHierarchyInfos().clear();
@@ -143,23 +118,33 @@ public class EmployeeDetailMapper {
                         .firstName(user.getFirstName())
                         .lastName(user.getLastName())
                         .build())
+
                 .workInfo(WorkInfoMapper.workInfoIntoWorkInfoResponse(user.getWorkInfo()))
+
                 .personalDetail(PersonalDetailMapper.personalDetailIntoPersonalDetailResponse(user.getPersonalDetail()))
+
                 .identityInfo(IdentityInfoMapper.identityInfoIntoIdentityInfoResponse(user.getIdentityInfo()))
+
                 .contactDetail(ContactDetailMapper.contactDetailIntoContactDetailResponse(user.getContactDetail()))
+
                 .systemField(SystemFieldMapper.systemFieldIntoSystemFieldReason(user.getSystemField()))
+
                 .workExperience(user.getWorkExperiences().stream()
                         .map(WorkExperienceMapper::workExperienceIntoWorkExperienceResponse)
                         .toList())
+
                 .educationDetails(user.getEducationDetails().stream()
                         .map(EducationDetailMapper::educationDetailIntoEducationDetailResponse)
                         .toList())
+
                 .dependentDetails(user.getDependentDetails().stream()
                         .map(DependentDetailMapper::dependentDetailIntoDependentDetailResponse)
                         .toList())
+
                 .relatedForms(user.getRelatedForms().stream()
                         .map(RelatedFormMapper::relatedFormIntoRelatedFormResponse)
                         .toList())
+
                 .hierarchyInfos(user.getHierarchyInfos().stream()
                         .map(HierarchyInfoMapper::hierarchyInfoIntoHierarchyInfoResponse)
                         .toList())

@@ -18,6 +18,8 @@ import java.time.LocalDate;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE dependent_detail SET IS_DELETED = true WHERE id = ?")
+@Where(clause = "IS_DELETED = false")
 public class DependentDetail extends AbstractPersistable {
     private String name;
     private String relation;

@@ -17,6 +17,8 @@ import org.hibernate.annotations.Where;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE identity_info SET IS_DELETED = true WHERE id = ?")
+@Where(clause = "IS_DELETED = false")
 public class IdentityInfo extends AbstractPersistable{
 
     private String uan;
