@@ -1,7 +1,9 @@
 package com.moonstack.mapper;
 
+import com.moonstack.dtos.request.PersonalDetailRequest;
 import com.moonstack.dtos.request.RelatedFormRequest;
 import com.moonstack.dtos.response.RelatedFormResponse;
+import com.moonstack.entity.PersonalDetail;
 import com.moonstack.entity.RelatedForm;
 import com.moonstack.utils.Helper;
 
@@ -16,6 +18,11 @@ public class RelatedFormMapper
                 .isActive(true)
                 .deleted(false)
                 .build();
+    }
+
+    public static void updateFromRequest(RelatedFormRequest request, RelatedForm relatedForm) {
+        relatedForm.setType(request.getType());
+        relatedForm.setDetails(request.getDetails());
     }
 
     public static RelatedFormResponse relatedFormIntoRelatedFormResponse(RelatedForm relatedForm)

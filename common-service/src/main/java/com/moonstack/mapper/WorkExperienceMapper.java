@@ -1,8 +1,10 @@
 package com.moonstack.mapper;
 
 import com.moonstack.dtos.request.WorkExperienceRequest;
+import com.moonstack.dtos.request.WorkInfoRequest;
 import com.moonstack.dtos.response.WorkExperienceResponse;
 import com.moonstack.entity.WorkExperience;
+import com.moonstack.entity.WorkInfo;
 import com.moonstack.utils.Helper;
 
 public class WorkExperienceMapper
@@ -20,6 +22,15 @@ public class WorkExperienceMapper
                 .deleted(false)
                 .build();
     }
+
+    public static void updateFromRequest(WorkExperienceRequest request, WorkExperience workExperience) {
+        workExperience.setCompanyName(request.getCompanyName());
+        workExperience.setJobTitle(request.getJobTitle());
+        workExperience.setFromDate(request.getFromDate());
+        workExperience.setToDate(request.getToDate());
+        workExperience.setJobDescription(request.getJobDescription());
+    }
+
 
     public static WorkExperienceResponse workExperienceIntoWorkExperienceResponse(WorkExperience workExperience)
     {

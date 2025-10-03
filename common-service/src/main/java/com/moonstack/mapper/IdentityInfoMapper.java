@@ -19,6 +19,12 @@ public class IdentityInfoMapper
                 .build();
     }
 
+    public static void updateFromRequest(IdentityInfoRequest request, IdentityInfo identityInfo) {
+        identityInfo.setUan(request.getUan());
+        identityInfo.setPan(request.getPan());
+        identityInfo.setAadhar(request.getAadhar());
+    }
+
     public static IdentityInfoResponse identityInfoIntoIdentityInfoResponse(IdentityInfo identityInfo)
     {
         return IdentityInfoResponse.builder()

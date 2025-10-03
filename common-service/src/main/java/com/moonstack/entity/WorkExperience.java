@@ -18,6 +18,8 @@ import java.time.LocalDate;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE work_experience SET IS_DELETED = true WHERE id = ?")
+@Where(clause = "IS_DELETED = false")
 public class WorkExperience extends AbstractPersistable{
 
     private String companyName;
