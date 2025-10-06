@@ -1,5 +1,6 @@
 package com.moonstack.dtos.response;
 
+import com.moonstack.entity.Role;
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,7 +13,6 @@ public class UserResponse {
     private String firstName;
     private String lastName;
     private String email;
-    private String firstName;
-    private String lastName;
+    private Set<Role> roles;
 }
 
