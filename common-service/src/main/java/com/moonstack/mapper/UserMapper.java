@@ -23,6 +23,8 @@ public class UserMapper
 //                user.getRoles().stream().map(UserMapper::convertRoletoRoleResponse).collect(Collectors.toSet());
         UserResponse response = UserResponse.builder()
                 .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
                 .email(user.getEmail())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())

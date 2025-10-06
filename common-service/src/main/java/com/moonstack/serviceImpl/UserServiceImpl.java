@@ -91,4 +91,14 @@ public class UserServiceImpl implements UserService
     public boolean userExists(String userId) {
         return userRepository.existsById(userId);
     }
+
+    @Override
+    public List<UserResponse> findAll() {
+
+        List<User> users  = userRepository.findAll();
+        if (users.isEmpty())
+            throw new NotFoundException("Users not found");
+
+        return users.stream().map(UserMapper::convertUsertoUserResponse).toList();
+    }
 }

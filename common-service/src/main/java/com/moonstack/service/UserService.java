@@ -8,6 +8,8 @@ import com.moonstack.dtos.response.UserResponse;
 import com.moonstack.entity.User;
 import com.moonstack.response.PageResponse;
 
+import java.util.List;
+
 public interface UserService
 {
     PageResponse<UserResponse> getAll(Integer page, Integer size);
@@ -21,5 +23,7 @@ public interface UserService
     void add(User user);
 
     boolean userExists(String userId);
+
+    List<UserResponse> findAll();
 
 }
