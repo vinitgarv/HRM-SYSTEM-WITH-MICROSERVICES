@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -86,6 +88,17 @@ public class UserController {
                 .message(Message.SUCCESS)
                 .multiple(true)
                 .data(UserMapper.convertUsertoUserResponse(userService.update(id,registerRequest)))
+                .build();
+        return response;
+    }
+
+    @GetMapping("/findAll")
+    public ApiResponse<List<UserResponse>> findAll() {
+        ApiResponse<List<UserResponse>> response = ApiResponse.<List<UserResponse>>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message(Message.SUCCESS)
+                .multiple(true)
+                .data(userService.findAll())
                 .build();
         return response;
     }

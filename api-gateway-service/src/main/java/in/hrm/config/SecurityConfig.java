@@ -45,11 +45,11 @@ public class SecurityConfig {
 //                                "/common/user/**"
                         ).permitAll()
 
-//                        // only ADMIN can access these
-//                        .pathMatchers("/common/user/**")
-//                        .hasAuthority("ROLE_ADMIN")
-//                        // everything else must be authenticated
-//                        .anyExchange().authenticated()
+                        // only ADMIN can access these
+                        .pathMatchers("/hrops/attendance/**","/hrops/asset/**","/hrops/asset-allotment/**")
+                        .hasAuthority("ROLE_ADMIN")
+                        // everything else must be authenticated
+                        .anyExchange().authenticated()
                 )
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(authenticationEntryPoint)

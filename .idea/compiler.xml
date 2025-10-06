@@ -12,11 +12,13 @@
         <module name="api-gateway-service" />
         <module name="config-server-service" />
         <module name="service-discovery" />
+        <module name="SpringbootSecurityJwt4DB" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="SpringbootSecurityJwt4DB" options="-parameters" />
       <module name="api-gateway-service" options="-parameters" />
       <module name="common-service" options="-parameters" />
       <module name="config-server-service" options="-parameters" />

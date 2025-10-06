@@ -86,4 +86,14 @@ public class UserServiceImpl implements UserService
     public void add(User user) {
 userRepository.save(user);
     }
+
+    @Override
+    public List<UserResponse> findAll() {
+
+        List<User> users  = userRepository.findAll();
+        if (users.isEmpty())
+            throw new NotFoundException("Users not found");
+
+        return users.stream().map(UserMapper::convertUsertoUserResponse).toList();
+    }
 }
