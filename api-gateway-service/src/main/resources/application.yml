@@ -13,12 +13,6 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: USER-SERVICE
-          uri: lb://USER-SERVICE
-          predicates:
-            - Path=/user/**
-          filters:
-            - StripPrefix=1
         - id: ADMIN-SERVICE
           uri: lb://ADMIN-SERVICE
           predicates:

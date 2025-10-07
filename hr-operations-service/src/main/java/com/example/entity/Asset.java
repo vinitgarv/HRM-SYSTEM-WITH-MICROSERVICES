@@ -29,9 +29,6 @@ public class Asset extends AbstractPersistable
     private String model;
     private String serialNumber;
 
-//    private LocalDate assignedDate;
-//    private LocalDate returnDate;
-
     private LocalDate purchaseDate;
     private Double purchaseCost;
     private String vendorName;

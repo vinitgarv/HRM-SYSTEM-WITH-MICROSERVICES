@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @SuperBuilder
 @Inheritance
@@ -18,6 +20,8 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE SESSION_LOGS SET IS_DELETED = true WHERE id = ?")
+@Where(clause = "IS_DELETED = false")
 public class SessionLogs extends AbstractPersistable
 {
     private String action;

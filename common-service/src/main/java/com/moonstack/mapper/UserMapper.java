@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 public class UserMapper
 {
     public static RoleResponse convertRoletoRoleResponse(Role role) {
+
         RoleResponse response = RoleResponse.builder()
                 .id(role.getId())
                 .name(role.getName())
@@ -19,8 +20,10 @@ public class UserMapper
     }
 
     public static UserResponse convertUsertoUserResponse(User user) {
-//        Set<RoleResponse> roles = user.getRoles() == null ? null :
-//                user.getRoles().stream().map(UserMapper::convertRoletoRoleResponse).collect(Collectors.toSet());
+        Set<RoleResponse> roles = user.getRoles().stream()
+                .map(UserMapper::convertRoletoRoleResponse)
+                .collect(Collectors.toSet());
+
         UserResponse response = UserResponse.builder()
                 .id(user.getId())
                 .firstName(user.getFirstName())
@@ -30,7 +33,7 @@ public class UserMapper
                 .lastName(user.getLastName())
                 .build();
 
-//        response.setRoles(roles);
+        response.setRoles(roles);
         return response;
     }
 }

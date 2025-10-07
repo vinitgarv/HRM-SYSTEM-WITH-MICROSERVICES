@@ -65,6 +65,7 @@ public class AuthServiceImpl implements AuthService
     @Override
     public void register(RegisterRequest request)
     {
+        request.validate();
         if(userRepository.existsByEmail(request.getEmail()))
         {
             throw new AlreadyPresentException(Message.EMAIL+Message.TAB+Message.ALREADY+Message.TAB+Message.PRESENT+Message.DOT);

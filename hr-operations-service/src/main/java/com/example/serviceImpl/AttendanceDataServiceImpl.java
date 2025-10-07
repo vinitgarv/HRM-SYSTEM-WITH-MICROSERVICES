@@ -65,7 +65,6 @@ public class AttendanceDataServiceImpl implements AttendanceDataService {
             Optional<AttendanceData> todayAttendanceOpt = repository.findByUserAndDate(user.getId(), today);
             if (todayAttendanceOpt.isEmpty())
             {
-                //System.out.println("No attendance recorded yet for user " + user.getId() + " today.");
                 continue; // skip if employee hasn't punched in today
             }
             AttendanceData todayAttendance = todayAttendanceOpt.get();

@@ -40,13 +40,11 @@ public class SecurityConfig {
                         .pathMatchers(
                                 "/common/auth/login",
                                 "/common/auth/register",
-                                "/common/auth/changePassword/**","/common/employeedetails/**","/common/user/**","/common/message/**"
-//                                ,
-//                                "/common/user/**"
+                                "/common/auth/changePassword/**","/common/employeedetails/**","/common/user/**","/common/message/**", "/common/user/**"
                         ).permitAll()
 
                         // only ADMIN can access these
-                        .pathMatchers("/hrops/attendance/**","/hrops/asset/**","/hrops/asset-allotment/**")
+                        .pathMatchers("/hrops/attendance/**","/hrops/asset/**","/hrops/asset-allotment/**","/hrops/attendanceApproval/**","/hrops/holiday/**")
                         .hasAuthority("ROLE_ADMIN")
                         // everything else must be authenticated
                         .anyExchange().authenticated()

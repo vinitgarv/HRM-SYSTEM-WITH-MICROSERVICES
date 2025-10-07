@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
@@ -17,6 +19,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder
 @Inheritance
+@SQLDelete(sql = "UPDATE ROLE SET IS_DELETED = true WHERE id = ?")
+@Where(clause = "IS_DELETED = false")
 public class Role extends AbstractPersistable {
     private String name;
 

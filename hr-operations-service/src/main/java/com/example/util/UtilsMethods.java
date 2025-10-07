@@ -6,7 +6,8 @@ import java.util.Base64;
 import java.util.UUID;
 
 public class UtilsMethods {
-    public static String generateId() {
+    public static String generateId()
+    {
         return UUID.randomUUID().toString().replaceAll("-","").substring(0,10);
     }
 

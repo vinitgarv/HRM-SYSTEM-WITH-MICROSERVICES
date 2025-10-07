@@ -91,14 +91,4 @@ public class AttendanceLogsController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-//     @GetMapping("/userAttendanceLogs/{id}")
-//    public ResponseEntity<ApiResponse<AttendanceRecord>> userAttendanceLogs(@PathVariable("id") String id) {
-//        ApiResponse<AttendanceRecord> response = ApiResponse.<AttendanceRecord>builder()
-//                .statusCode(HttpStatus.OK.value())
-//                .message(Message.SUCCESS)
-//                .multiple(Message.TRUE)
-//                .data(attendanceLogsService.getAttendanceByUserId(id))
-//                .build();
-//        return new ResponseEntity<>(response,HttpStatus.OK);
-//    }
 }

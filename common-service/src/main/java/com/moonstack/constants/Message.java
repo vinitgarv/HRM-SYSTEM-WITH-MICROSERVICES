@@ -45,6 +45,7 @@ public class Message
     public static String OLD_PASSWORD="old password";
     public static String NEW_PASSWORD="new password";
     public static String CONFIRM_PASSWORD="confirm password";
+    public static String REQUIRED="required";
 
     public static String DID="did";
     public static String MATCH="match";

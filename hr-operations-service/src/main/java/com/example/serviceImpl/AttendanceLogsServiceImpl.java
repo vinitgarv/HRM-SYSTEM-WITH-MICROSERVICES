@@ -104,53 +104,6 @@ public class AttendanceLogsServiceImpl implements AttendanceLogsService {
     private static final LocalTime LATE_THRESHOLD = LocalTime.of(9, 45);
     private static final LocalTime HALFDAY_THRESHOLD = LocalTime.of(13, 30);
 
-//    @Override
-//    public String punchIn(String userId) {
-//        User user = userService.findById(userId);
-//        LocalDate today = LocalDate.now();
-//
-//        List<AttendanceLogs> todayLogs = repository.findByUserAndDate(user, today);
-//
-//        if (todayLogs.size() >= 2) {
-//            throw new IllegalStateException("You have already checked in and checked out today.");
-//        }
-//
-//        String punchType = todayLogs.isEmpty() ? "Checkin" : "Checkout";
-//
-//        AttendanceLogs attendanceLogs = AttandanceLogsMapper
-//                .convertAttendenceLogRequestToAttandenceLog(punchType);
-//
-//        attendanceLogs.setUser(user);
-//        repository.save(attendanceLogs);
-//
-//        AttendanceData attendanceData;
-//
-//        if (punchType.equals("Checkin")) {
-//            attendanceData = AttendanceData.builder()
-//                    .id(UtilsMethods.generateId())
-//                    .user(user)
-//                    .date(today)
-//                    .firstPunchInTime(attendanceLogs.getPunchTime())
-//                    .lastPunchoutTime(null)
-//                    .attendanceStatus("Present")
-//                    .valid(true)
-//                    .isActive(true)
-//                    .isDeleted(false)
-//                    .build();
-//            attendanceDataService.add(attendanceData);
-//
-//        } else {
-//            attendanceData = attendanceDataService.findByUserAndDate(user, today);
-////            if (attendanceData == null) {
-////                throw new IllegalStateException("No checkin record found for today.");
-////            }
-//
-//            attendanceData.setLastPunchoutTime(attendanceLogs.getPunchTime());
-//            attendanceDataService.add(attendanceData);
-//        }
-//        return punchType + " successful at " + attendanceLogs.getPunchTime();
-//    }
-
     private final List<AttendanceRecord> attendanceList = new ArrayList<>();
 
     public AttendanceLogsServiceImpl() {
@@ -209,12 +162,6 @@ public class AttendanceLogsServiceImpl implements AttendanceLogsService {
                 .map(AttandanceLogsMapper::AttandenceLogToAttandenceLogResponse)
                 .toList();
     }
-
-//    @Override
-//    public void add(AttandenceLogsRequest request) {
-//        repository.save(AttandanceLogsMapper.convertAttendenceLogRequestToAttandenceLog(request));
-//    }
-
 
     @Override
     public List<AttendanceLogsResponse> addAllUserAttendance() {

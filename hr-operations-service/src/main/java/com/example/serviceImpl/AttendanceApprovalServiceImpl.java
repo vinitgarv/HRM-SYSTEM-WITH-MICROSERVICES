@@ -75,9 +75,4 @@ public class AttendanceApprovalServiceImpl implements AttendanceApprovalService 
          attendanceApprovalRepository.save(request);
          return  request;
     }
-//
-//    @Override
-//    public List<AttendanceApproval> getPendingRequests() {
-//        return List.of();
-//    }
 }

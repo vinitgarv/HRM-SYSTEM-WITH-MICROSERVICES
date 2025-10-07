@@ -19,14 +19,10 @@ public class AssetRequest
     private String model;
     private String serialNumber;
 
-//    private LocalDate assignedDate;
-//    private LocalDate returnDate;
-
     private LocalDate purchaseDate;
     private Double purchaseCost;
     private String vendorName;
 
-  //  private String status; // available, assigned, under_maintenance, retired
     private String condition; // new, good, damaged, lost
 
     private String location;
@@ -87,11 +83,6 @@ public class AssetRequest
             throw new RequestFailedException(Message.PURCHASE_COST + Message.TAB + Message.IS + Message.TAB + Message.INVALID+Message.DOT);
         }
 
-//        if (status == null || status.trim().isEmpty())
-//        {
-//            throw new RequestFailedException(Message.STATUS + Message.TAB + Message.IS + Message.TAB + Message.EMPTY+Message.DOT);
-//        }
-
         if (condition == null || condition.trim().isEmpty())
         {
             throw new RequestFailedException(Message.CONDITION + Message.TAB + Message.IS + Message.TAB + Message.EMPTY+Message.DOT);
@@ -101,22 +92,6 @@ public class AssetRequest
         {
             throw new RequestFailedException(Message.LOCATION + Message.TAB + Message.IS + Message.TAB + Message.EMPTY+Message.DOT);
         }
-
-//        if (assignedDate == null)
-//        {
-//            throw new RequestFailedException(Message.ASSIGNED_DATE + Message.TAB + Message.IS + Message.TAB + Message.EMPTY+Message.DOT);
-//        }
-//
-//        if (returnDate == null)
-//        {
-//            throw new RequestFailedException(Message.RETURN_DATE + Message.TAB + Message.IS + Message.TAB + Message.EMPTY+Message.DOT);
-//        }
-//
-//        if (assignedDate != null && returnDate != null && returnDate.isBefore(assignedDate))
-//        {
-//            throw new RequestFailedException(Message.RETURN_DATE + Message.TAB + Message.CANNOT + Message.TAB +
-//                    Message.BEFORE + Message.TAB + Message.ASSIGNED_DATE + Message.DOT);
-//        }
 
         if (warranty == null || warranty.trim().isEmpty())
         {

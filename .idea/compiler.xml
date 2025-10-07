@@ -11,13 +11,13 @@
         <module name="api-gateway-service" />
         <module name="SpringbootSecurityJwt4DB" />
         <module name="hr-operations-service" />
-        <module name="user-service" />
         <module name="config-server-service" />
         <module name="service-discovery" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="SpringbootSecurityJwt4DB" target="17" />
+      <module name="user-service" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
