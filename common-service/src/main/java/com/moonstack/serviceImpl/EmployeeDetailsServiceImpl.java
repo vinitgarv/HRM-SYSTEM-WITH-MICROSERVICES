@@ -194,9 +194,9 @@ public class EmployeeDetailsServiceImpl implements EmployeeDetailsService {
         return EmployeeDetailMapper.toResponse(user);
     }
 
-    @Override
-    public EmployeeDetailsResponse getById(String id) {
-        User user = userService.getById(id);
-        return EmployeeDetailMapper.toResponse(user);
-    }
+//    @Override
+//    public EmployeeDetailsResponse getById(String id) {
+//        User user = userService.getById(id);
+//        return EmployeeDetailMapper.toResponse(user);
+//    }
 }

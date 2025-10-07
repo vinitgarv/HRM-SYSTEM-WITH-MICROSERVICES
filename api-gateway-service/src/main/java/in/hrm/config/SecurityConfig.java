@@ -40,7 +40,7 @@ public class SecurityConfig {
                         .pathMatchers(
                                 "/common/auth/login",
                                 "/common/auth/register",
-                                "/common/auth/changePassword/**","/common/employeedetails/**","/common/user/**","/common/message/**", "/common/user/**"
+                                "/common/auth/changePassword/**","/common/employeedetails/**","/common/user/**","/common/message/**","common/user/**"
                         ).permitAll()
 
                         // only ADMIN can access these

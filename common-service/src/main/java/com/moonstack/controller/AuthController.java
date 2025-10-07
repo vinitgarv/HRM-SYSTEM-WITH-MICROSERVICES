@@ -28,6 +28,9 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtTokenUtil;
 
+    @Autowired
+    private HttpServletRequest request;
+
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AuthResponse>> login(@RequestBody AuthRequest authRequest, HttpServletRequest request) {
         ApiResponse<AuthResponse> response = ApiResponse.<AuthResponse>builder()
@@ -72,7 +75,7 @@ public class AuthController {
     }
 
     @GetMapping("/logout")
-    public ResponseEntity<ApiResponse<String>> logout(HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<String>> logout() {
         String token  = jwtTokenUtil.extractToken(request);
         String userId = jwtTokenUtil.extractUserId(token);
         return ResponseEntity.ok(ApiResponse.<String>builder()

@@ -41,16 +41,16 @@ public class EmployeeDetailController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @GetMapping("/getById/{userId}")
-
-    public ResponseEntity<ApiResponse<EmployeeDetailsResponse>> getById( @PathVariable String userId)
-    {
-        ApiResponse<EmployeeDetailsResponse> response = ApiResponse.<EmployeeDetailsResponse>builder()
-                .statusCode(HttpStatus.OK.value())
-                .message(Message.SUCCESS)
-                .multiple(false)
-                .data(employeeDetailsService.getById(userId))
-                .build();
-        return new ResponseEntity<>(response,HttpStatus.OK);
-    }
+//    @GetMapping("/getById/{userId}")
+//
+//    public ResponseEntity<ApiResponse<EmployeeDetailsResponse>> getById( @PathVariable String userId)
+//    {
+//        ApiResponse<EmployeeDetailsResponse> response = ApiResponse.<EmployeeDetailsResponse>builder()
+//                .statusCode(HttpStatus.OK.value())
+//                .message(Message.SUCCESS)
+//                .multiple(false)
+//                .data(employeeDetailsService.getById(userId))
+//                .build();
+//        return new ResponseEntity<>(response,HttpStatus.OK);
+//    }
 }
