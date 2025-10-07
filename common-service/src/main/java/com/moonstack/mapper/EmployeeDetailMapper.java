@@ -1,18 +1,27 @@
 package com.moonstack.mapper;
 
 import com.moonstack.dtos.response.EmployeeDetailsResponse;
+import com.moonstack.dtos.response.RoleResponse;
 import com.moonstack.dtos.response.UserResponse;
 import com.moonstack.entity.*;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class EmployeeDetailMapper {
 
     public static EmployeeDetailsResponse toResponse(User user) {
+        Set<RoleResponse> roles = user.getRoles().stream()
+                .map(UserMapper::convertRoletoRoleResponse)
+                .collect(Collectors.toSet());
+
         return EmployeeDetailsResponse.builder()
                 .userResponse(UserResponse.builder()
                         .id(user.getId())
                         .email(user.getEmail())
                         .firstName(user.getFirstName())
                         .lastName(user.getLastName())
+                        .roles(roles)
                         .build())
 
                 .workInfo(WorkInfoMapper.workInfoIntoWorkInfoResponse(user.getWorkInfo()))

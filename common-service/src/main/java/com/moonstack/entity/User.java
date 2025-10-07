@@ -31,40 +31,40 @@ public class User extends AbstractPersistable
     private String password;
     private int tokenVersion = 0;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private Set<Role> roles = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<SessionLogs> sessionLogs;
 
-    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER,orphanRemoval = true)
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private ContactDetail contactDetail;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY,orphanRemoval = true)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<DependentDetail> dependentDetails;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY,orphanRemoval = true)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<EducationDetail> educationDetails;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY,orphanRemoval = true)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<HierarchyInfo> hierarchyInfos;
 
-    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER,orphanRemoval = true)
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private IdentityInfo identityInfo;
 
-    @OneToOne( mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER,orphanRemoval = true)
+    @OneToOne( mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private PersonalDetail personalDetail;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY,orphanRemoval = true)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<RelatedForm> relatedForms;
 
-    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER,orphanRemoval = true)
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private SystemField systemField;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY,orphanRemoval = true)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<WorkExperience> workExperiences;
 
-    @OneToOne( mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER,orphanRemoval = true)
+    @OneToOne( mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private WorkInfo workInfo;
 
 
