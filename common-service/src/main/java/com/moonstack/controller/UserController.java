@@ -3,6 +3,7 @@ package com.moonstack.controller;
 import com.moonstack.constants.Message;
 import com.moonstack.dtos.request.RegisterRequest;
 import com.moonstack.dtos.response.UserResponse;
+import com.moonstack.dtos.response.UserTokenResponse;
 import com.moonstack.entity.User;
 import com.moonstack.mapper.UserMapper;
 import com.moonstack.repository.UserRepository;
@@ -99,6 +100,17 @@ public class UserController {
                 .message(Message.SUCCESS)
                 .multiple(true)
                 .data(userService.findAll())
+                .build();
+        return response;
+    }
+
+    @GetMapping("/usertokenresponse/{id}")
+    public ApiResponse<UserTokenResponse> getUserTokenResponse(@PathVariable("id") String id) {
+        ApiResponse<UserTokenResponse> response = ApiResponse.<UserTokenResponse>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message(Message.SUCCESS)
+                .multiple(true)
+                .data(userService.getUserTokenResponse(id))
                 .build();
         return response;
     }

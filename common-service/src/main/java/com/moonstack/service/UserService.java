@@ -2,6 +2,7 @@ package com.moonstack.service;
 
 import com.moonstack.dtos.request.RegisterRequest;
 import com.moonstack.dtos.response.UserResponse;
+import com.moonstack.dtos.response.UserTokenResponse;
 import com.moonstack.entity.User;
 import com.moonstack.response.PageResponse;
 
@@ -23,4 +24,5 @@ public interface UserService
 
     List<UserResponse> findAll();
 
+    UserTokenResponse getUserTokenResponse(String userId);
 }

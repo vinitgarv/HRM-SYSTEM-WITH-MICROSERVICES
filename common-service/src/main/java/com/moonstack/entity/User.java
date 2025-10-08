@@ -29,6 +29,9 @@ public class User extends AbstractPersistable
     private String email;
     private String tempPassword;
     private String password;
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String access_token;
     private int tokenVersion = 0;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
