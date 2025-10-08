@@ -7,6 +7,7 @@ import com.moonstack.entity.RefreshToken;
 import com.moonstack.entity.Role;
 import com.moonstack.entity.User;
 import com.moonstack.exception.AlreadyPresentException;
+import com.moonstack.exception.ForbiddenException;
 import com.moonstack.exception.NotFoundException;
 import com.moonstack.repository.RefreshTokenRepository;
 import com.moonstack.repository.UserRepository;
@@ -160,7 +161,7 @@ public class AuthServiceImpl implements AuthService
 
         RefreshToken refreshToken = refreshTokenService.findByToken(requestRefreshToken)
                 .map(refreshTokenService::verifyExpiration)
-                .orElseThrow(() -> new RuntimeException("Refresh token not found"));
+                .orElseThrow(() -> new ForbiddenException("REFRESH_TOKEN_EXPIRED"));
 
         User user = refreshToken.getUser();
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(user.getEmail());
