@@ -3,6 +3,7 @@ package com.moonstack.serviceImpl;
 import com.moonstack.constants.Message;
 import com.moonstack.dtos.request.*;
 import com.moonstack.dtos.response.UserResponse;
+import com.moonstack.dtos.response.UserTokenResponse;
 import com.moonstack.entity.User;
 import com.moonstack.exception.AlreadyPresentException;
 import com.moonstack.exception.InvalidSessionException;
@@ -100,5 +101,14 @@ public class UserServiceImpl implements UserService
             throw new NotFoundException("Users not found");
 
         return users.stream().map(UserMapper::convertUsertoUserResponse).toList();
+    }
+
+    @Override
+    public UserTokenResponse getUserTokenResponse(String userId)
+    {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(Message.USER+Message.TAB+Message.NOT_FOUND+Message.DOT));
+
+        return UserMapper.convertUserToUserTokenResponse(user);
     }
 }

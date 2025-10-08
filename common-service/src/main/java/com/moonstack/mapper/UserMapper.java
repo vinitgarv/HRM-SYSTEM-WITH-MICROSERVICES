@@ -2,6 +2,7 @@ package com.moonstack.mapper;
 
 import com.moonstack.dtos.response.RoleResponse;
 import com.moonstack.dtos.response.UserResponse;
+import com.moonstack.dtos.response.UserTokenResponse;
 import com.moonstack.entity.Role;
 import com.moonstack.entity.User;
 
@@ -35,5 +36,16 @@ public class UserMapper
 
         response.setRoles(roles);
         return response;
+    }
+
+    public static UserTokenResponse convertUserToUserTokenResponse(User user)
+    {
+        return UserTokenResponse.builder()
+                .userId(user.getId())
+                .tokenVersion(user.getTokenVersion())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .build();
     }
 }

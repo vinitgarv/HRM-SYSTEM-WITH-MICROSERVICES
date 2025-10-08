@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApiResponse<T> implements Serializable {
+public class ApiResponse<T>  {
     private Integer statusCode;
     private String message;
     private Boolean multiple;

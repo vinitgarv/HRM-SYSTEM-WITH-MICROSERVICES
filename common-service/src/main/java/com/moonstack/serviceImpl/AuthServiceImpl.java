@@ -9,6 +9,7 @@ import com.moonstack.entity.User;
 import com.moonstack.exception.AlreadyPresentException;
 import com.moonstack.exception.ForbiddenException;
 import com.moonstack.exception.NotFoundException;
+import com.moonstack.exception.UnauthorizedException;
 import com.moonstack.repository.RefreshTokenRepository;
 import com.moonstack.repository.UserRepository;
 import com.moonstack.security.CustomUserDetailsService;
@@ -111,9 +112,9 @@ public class AuthServiceImpl implements AuthService
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
             user = userRepository.findByEmail(authRequest.getEmail())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+                    .orElseThrow(() -> new NotFoundException("User not found"));
             user.setTokenVersion(user.getTokenVersion() + 1);
-            userRepository.save(user);
+
 
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(user.getEmail());
             Set<String> roles = userDetails.getAuthorities().stream()
@@ -123,6 +124,9 @@ public class AuthServiceImpl implements AuthService
             accessToken = jwtTokenUtil.generateJwtToken(userDetails.getUsername(), user.getId(),user.getTokenVersion(), roles);
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
             refreshTokenValue = refreshToken.getToken();
+
+            user.setAccess_token(accessToken);
+            userRepository.save(user);
 
             return AuthResponse.builder()
                     .token(accessToken)
@@ -183,13 +187,17 @@ public class AuthServiceImpl implements AuthService
         String reason =null;
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
-
         try {
             RefreshToken refreshToken = refreshTokenRepository.findByUser(user)
                     .orElseThrow(() -> new NotFoundException("Invalid Refresh Token"));
             refreshToken.setToken(null);
             refreshToken.setExpiryDate(null);
             refreshToken.setUpdatedAt(LocalDateTime.now());
+
+            user.setAccess_token(null);
+            user.setTokenVersion(user.getTokenVersion() + 1);
+            userRepository.save(user);
+
             refreshTokenRepository.save(refreshToken);
         } catch (Exception ex) {
             reason = ex.getMessage();
