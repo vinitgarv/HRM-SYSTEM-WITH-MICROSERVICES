@@ -29,10 +29,7 @@ public class User extends AbstractPersistable
     private String email;
     private String tempPassword;
     private String password;
-    @Lob
-    @Column(columnDefinition = "LONGTEXT")
-    private String access_token;
-    private int tokenVersion = 0;
+
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private Set<Role> roles = new LinkedHashSet<>();
@@ -69,6 +66,18 @@ public class User extends AbstractPersistable
 
     @OneToOne( mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private WorkInfo workInfo;
+
+
+
+//    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+//    private List<RefreshToken> refreshTokens;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private List<UserSessionData> userSessionData;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<DeviceData> deviceData;
+
 
 
     public void addRole(Role role) {

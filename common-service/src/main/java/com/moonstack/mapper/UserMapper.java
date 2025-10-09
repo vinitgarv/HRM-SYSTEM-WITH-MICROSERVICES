@@ -42,7 +42,7 @@ public class UserMapper
     {
         return UserTokenResponse.builder()
                 .userId(user.getId())
-                .tokenVersion(user.getTokenVersion())
+               // .tokenVersion(user.getTokenVersion())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())

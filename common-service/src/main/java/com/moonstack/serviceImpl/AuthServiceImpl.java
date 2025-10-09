@@ -3,17 +3,18 @@ package com.moonstack.serviceImpl;
 import com.moonstack.constants.Message;
 import com.moonstack.dtos.request.*;
 import com.moonstack.dtos.response.AuthResponse;
-import com.moonstack.entity.RefreshToken;
-import com.moonstack.entity.Role;
-import com.moonstack.entity.User;
+import com.moonstack.entity.*;
 import com.moonstack.exception.AlreadyPresentException;
 import com.moonstack.exception.ForbiddenException;
 import com.moonstack.exception.NotFoundException;
 import com.moonstack.exception.UnauthorizedException;
+import com.moonstack.repository.DeviceDataRepository;
 import com.moonstack.repository.RefreshTokenRepository;
 import com.moonstack.repository.UserRepository;
+import com.moonstack.repository.UserSessionDataRepository;
 import com.moonstack.security.CustomUserDetailsService;
 import com.moonstack.service.*;
+import com.moonstack.utils.DeviceUtil;
 import com.moonstack.utils.Helper;
 import com.moonstack.utils.IpUtils;
 import com.moonstack.utils.JwtUtil;
@@ -27,6 +28,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -41,6 +44,12 @@ public class AuthServiceImpl implements AuthService
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserSessionDataRepository userSessionDataRepository;
+
+    @Autowired
+    private DeviceDataRepository deviceDataRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -101,8 +110,103 @@ public class AuthServiceImpl implements AuthService
         userRepository.save(user);
     }
 
+//    @Override
+//    public AuthResponse login(AuthRequest authRequest, HttpServletRequest request) {
+//        User user = null;
+//        String accessToken = null;
+//        String refreshTokenValue = null;
+//        String reason = null;
+//
+//        try {
+//            authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
+//            user = userRepository.findByEmail(authRequest.getEmail())
+//                    .orElseThrow(() -> new NotFoundException("User not found"));
+//
+//            //inside user i will find if the user with sessionId & deviceId still exists
+//            String deviceId = DeviceUtil.generateDeviceId(request);
+//            String deviceName = DeviceUtil.getDeviceName(request);
+//            String ipAddress = IpUtils.getClientIp(request);
+//
+//
+//            DeviceData deviceData = DeviceData.builder()
+//                    .id(Helper.generateId())
+//                    .isActive(true)
+//                    .deleted(false)
+//                    .deviceId(deviceId)
+//                    .deviceName(deviceName)
+//                    .ipAddress(ipAddress)
+//                    .user(user)
+//                    .build();
+//
+//            deviceDataRepository.save(deviceData);
+//
+//            UserSessionData userSessionData = UserSessionData.builder()
+//                    .id(Helper.generateId())
+//                    .isActive(true)
+//                    .deleted(false)
+//                    .user(user)
+//                    .deviceData(deviceData)
+//                    .build();
+//
+//
+//
+//
+//            UserDetails userDetails = customUserDetailsService.loadUserByUsername(user.getEmail());
+//            Set<String> roles = userDetails.getAuthorities().stream()
+//                    .map(GrantedAuthority::getAuthority)
+//                    .collect(Collectors.toSet());
+//
+//            accessToken = jwtTokenUtil.generateJwtToken(userDetails.getUsername(), user.getId(), roles,userSessionData,deviceData);
+//            RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
+//            refreshTokenValue = refreshToken.getToken();
+//
+//            userSessionData.setAccessToken(accessToken);
+//            userSessionData.setRefreshToken(refreshTokenValue);
+//
+//            userSessionDataRepository.save(userSessionData);
+//
+//
+//            user.getUserSessionData().add(userSessionData);
+//            user.getDeviceData().add(deviceData);
+//            userRepository.save(user);
+//
+//
+//
+//            return AuthResponse.builder()
+//                    .token(accessToken)
+//                    .refreshToken(refreshTokenValue)
+//                    .build();
+//
+//        } catch (Exception ex) {
+//            reason = ex.getMessage();
+//            user = userRepository.findByEmail(authRequest.getEmail()).orElse(null);
+//
+//            throw ex;
+//        } finally {
+//            final User finalUser = user;
+//            String clientIp = IpUtils.getClientIp(request);
+//            SessionLogsRequest logRequest = SessionLogsRequest.builder()
+//                    .action(Message.LOGIN)
+//                    .reason(reason)
+//                    .user(user)
+//                    .ipAddress(clientIp)
+//                    .build();
+//            if (finalUser != null) {
+//                new Thread(() -> {
+//                    try {
+//                        sessionLogsService.recordLogin(logRequest);
+//                    } catch (Exception logEx) {
+//                        logEx.printStackTrace();
+//                    }
+//                }).start();
+//            }
+//        }
+//    }
+
     @Override
-    public AuthResponse login(AuthRequest authRequest, HttpServletRequest request) {
+    public AuthResponse login(AuthRequest authRequest, HttpServletRequest request)
+    {
         User user = null;
         String accessToken = null;
         String refreshTokenValue = null;
@@ -111,21 +215,84 @@ public class AuthServiceImpl implements AuthService
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
+
             user = userRepository.findByEmail(authRequest.getEmail())
                     .orElseThrow(() -> new NotFoundException("User not found"));
-            user.setTokenVersion(user.getTokenVersion() + 1);
 
+            // Device info
+            String deviceId = DeviceUtil.generateDeviceId(request);
+            String deviceName = DeviceUtil.getDeviceName(request);
+            String ipAddress = IpUtils.getClientIp(request);
+
+            // 🔹 Check if device already exists for this user
+            // Try to find existing device for this user
+            Optional<DeviceData> existingDeviceOpt = deviceDataRepository.findByDeviceIdAndUser(deviceId, user);
+
+            DeviceData deviceData;
+            if (existingDeviceOpt.isPresent()) {
+                // Update existing device
+
+                deviceData = existingDeviceOpt.get();
+                deviceData.setDeviceName(deviceName);
+                deviceData.setIpAddress(ipAddress);
+                deviceData.setIsActive(true);
+                deviceData.setDeleted(false);
+
+            } else {
+                // Create new device
+                deviceData = DeviceData.builder()
+                        .id(Helper.generateId()) // Optional: let JPA generate ID
+                        .deviceId(deviceId)
+                        .deviceName(deviceName)
+                        .ipAddress(ipAddress)
+                        .isActive(true)
+                        .deleted(false)
+                        .user(user)
+                        .build();
+            }
+
+            // Save the device
+            deviceData = deviceDataRepository.save(deviceData);
+
+
+            Optional<UserSessionData> existingUserSessionData = userSessionDataRepository.findByUserAndDeviceData(user, deviceData);
+
+            UserSessionData userSessionData;
+            if(existingUserSessionData.isPresent())
+            {
+                userSessionData = existingUserSessionData.get();
+                userSessionData.setIsActive(true);
+                userSessionData.setDeleted(false);
+                userSessionData.setDeviceData(deviceData);
+                userSessionData.setUser(user);
+            }
+            else {
+                userSessionData = UserSessionData.builder()
+                        .id(Helper.generateId()) // Let JPA generate ID
+                        .user(user)
+                        .deviceData(deviceData)
+                        .isActive(true)
+                        .deleted(false)
+                        .build();
+            }
 
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(user.getEmail());
             Set<String> roles = userDetails.getAuthorities().stream()
                     .map(GrantedAuthority::getAuthority)
                     .collect(Collectors.toSet());
 
-            accessToken = jwtTokenUtil.generateJwtToken(userDetails.getUsername(), user.getId(),user.getTokenVersion(), roles);
+            accessToken = jwtTokenUtil.generateJwtToken(userDetails.getUsername(), user.getId(), roles,userSessionData,deviceData);
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
             refreshTokenValue = refreshToken.getToken();
 
-            user.setAccess_token(accessToken);
+            userSessionData.setAccessToken(accessToken);
+            userSessionData.setRefreshToken(refreshTokenValue);
+
+            userSessionDataRepository.save(userSessionData);
+
+            // Update user relationships
+            user.getUserSessionData().add(userSessionData);
+            user.getDeviceData().add(deviceData);
             userRepository.save(user);
 
             return AuthResponse.builder()
@@ -136,7 +303,6 @@ public class AuthServiceImpl implements AuthService
         } catch (Exception ex) {
             reason = ex.getMessage();
             user = userRepository.findByEmail(authRequest.getEmail()).orElse(null);
-
             throw ex;
         } finally {
             final User finalUser = user;
@@ -159,69 +325,121 @@ public class AuthServiceImpl implements AuthService
         }
     }
 
+
+//    @Override
+//    public AuthResponse refreshToken(RefreshTokenRequest request) {
+//        String requestRefreshToken = request.getRefreshToken();
+//
+//        RefreshToken refreshToken = refreshTokenService.findByToken(requestRefreshToken)
+//                .map(refreshTokenService::verifyExpiration)
+//                .orElseThrow(() -> new ForbiddenException("REFRESH_TOKEN_EXPIRED"));
+//
+//        User user = refreshToken.getUser();
+//        UserDetails userDetails = customUserDetailsService.loadUserByUsername(user.getEmail());
+//
+//        Set<String> roles = userDetails.getAuthorities().stream()
+//                .map(GrantedAuthority::getAuthority)
+//                .collect(Collectors.toSet());
+//
+//
+//
+//        String newAccessToken = jwtTokenUtil.generateJwtToken(userDetails.getUsername(),user.getId(),roles,);
+//
+//        return AuthResponse.builder()
+//                .token(newAccessToken)
+//                .refreshToken(requestRefreshToken)
+//                .build();
+//    }
+
     @Override
-    public AuthResponse refreshToken(RefreshTokenRequest request) {
+    public AuthResponse refreshToken(RefreshTokenRequest request)
+    {
         String requestRefreshToken = request.getRefreshToken();
 
+        // 1️⃣ Fetch and validate refresh token
         RefreshToken refreshToken = refreshTokenService.findByToken(requestRefreshToken)
                 .map(refreshTokenService::verifyExpiration)
                 .orElseThrow(() -> new ForbiddenException("REFRESH_TOKEN_EXPIRED"));
 
+        // 2️⃣ Get the user and session linked to this refresh token
         User user = refreshToken.getUser();
+
+        // Find the UserSessionData that matches this refresh token
+        UserSessionData sessionData = user.getUserSessionData().stream()
+                .filter(s -> requestRefreshToken.equals(s.getRefreshToken()))
+                .findFirst()
+                .orElseThrow(() -> new ForbiddenException("SESSION_NOT_FOUND"));
+
+        DeviceData deviceData = sessionData.getDeviceData();
+
+        // 3️⃣ Load user details
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(user.getEmail());
 
         Set<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toSet());
 
-        String newAccessToken = jwtTokenUtil.generateJwtToken(userDetails.getUsername(),user.getId(),user.getTokenVersion(),roles);
+        // 4️⃣ Generate new access token with same sessionId and device info
+        String newAccessToken = jwtTokenUtil.generateJwtToken(
+                userDetails.getUsername(),
+                user.getId().toString(),
+                roles,
+                sessionData,
+                deviceData
+        );
 
+        // 5️⃣ Update session record with new access token
+        sessionData.setAccessToken(newAccessToken);
+        userSessionDataRepository.save(sessionData);
+
+        // 6️⃣ Return the new access token along with the same refresh token
         return AuthResponse.builder()
                 .token(newAccessToken)
                 .refreshToken(requestRefreshToken)
                 .build();
     }
 
-    @Override
-    public String logout(String userId,HttpServletRequest request) {
-        String reason =null;
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User not found"));
-        try {
-            RefreshToken refreshToken = refreshTokenRepository.findByUser(user)
-                    .orElseThrow(() -> new NotFoundException("Invalid Refresh Token"));
-            refreshToken.setToken(null);
-            refreshToken.setExpiryDate(null);
-            refreshToken.setUpdatedAt(LocalDateTime.now());
 
-            user.setAccess_token(null);
-            user.setTokenVersion(user.getTokenVersion() + 1);
-            userRepository.save(user);
-
-            refreshTokenRepository.save(refreshToken);
-        } catch (Exception ex) {
-            reason = ex.getMessage();
-        }
-
-        String clientIP = IpUtils.getClientIp(request);
-
-        SessionLogsRequest logRequest = SessionLogsRequest.builder()
-                .action(Message.LOGOUT)
-                .reason(reason)
-                .user(user)
-                .ipAddress(clientIP)
-                .build();
-
-        new Thread(() -> {
-            try {
-                sessionLogsService.recordLogin(logRequest);
-            } catch (Exception logEx) {
-                logEx.printStackTrace();
-            }
-        }).start();
-
-        return "Logout Successful";
-    }
+//    @Override
+//    public String logout(String userId,HttpServletRequest request) {
+//        String reason =null;
+//        User user = userRepository.findById(userId)
+//                .orElseThrow(() -> new NotFoundException("User not found"));
+//        try {
+//            RefreshToken refreshToken = refreshTokenRepository.findByUser(user)
+//                    .orElseThrow(() -> new NotFoundException("Invalid Refresh Token"));
+//            refreshToken.setToken(null);
+//            refreshToken.setExpiryDate(null);
+//            refreshToken.setUpdatedAt(LocalDateTime.now());
+//
+//            user.setAccess_token(null);
+//            user.setTokenVersion(user.getTokenVersion() + 1);
+//            userRepository.save(user);
+//
+//            refreshTokenRepository.save(refreshToken);
+//        } catch (Exception ex) {
+//            reason = ex.getMessage();
+//        }
+//
+//        String clientIP = IpUtils.getClientIp(request);
+//
+//        SessionLogsRequest logRequest = SessionLogsRequest.builder()
+//                .action(Message.LOGOUT)
+//                .reason(reason)
+//                .user(user)
+//                .ipAddress(clientIP)
+//                .build();
+//
+//        new Thread(() -> {
+//            try {
+//                sessionLogsService.recordLogin(logRequest);
+//            } catch (Exception logEx) {
+//                logEx.printStackTrace();
+//            }
+//        }).start();
+//
+//        return "Logout Successful";
+//    }
 
     @Override
     public String changePassword(ChangePasswordRequest changePasswordRequest, String userId) {

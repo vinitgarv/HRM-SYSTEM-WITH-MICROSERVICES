@@ -74,16 +74,16 @@ public class AuthController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @GetMapping("/logout")
-    public ResponseEntity<ApiResponse<String>> logout() {
-        String token  = jwtTokenUtil.extractToken(request);
-        String userId = jwtTokenUtil.extractUserId(token);
-        return ResponseEntity.ok(ApiResponse.<String>builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("success")
-                .data(authService.logout(userId,request))
-                .build());
-    }
+//    @GetMapping("/logout")
+//    public ResponseEntity<ApiResponse<String>> logout() {
+//        String token  = jwtTokenUtil.extractToken(request);
+//        String userId = jwtTokenUtil.extractUserId(token);
+//        return ResponseEntity.ok(ApiResponse.<String>builder()
+//                .statusCode(HttpStatus.OK.value())
+//                .message("success")
+//                .data(authService.logout(userId,request))
+//                .build());
+//    }
 
 
 }

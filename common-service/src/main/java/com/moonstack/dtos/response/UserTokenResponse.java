@@ -8,7 +8,7 @@ import lombok.Data;
 public class UserTokenResponse
 {
     private String userId;
-    private Integer tokenVersion;
+   // private Integer tokenVersion;
     private String firstName;
     private String lastName;
     private String email;
