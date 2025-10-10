@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface UserSessionDataRepository extends JpaRepository<UserSessionData,String>
 {
     Optional<UserSessionData> findByUserAndDeviceData(User user, DeviceData deviceData);
+
+    Optional<UserSessionData> findByDeviceData(DeviceData deviceData);
 }

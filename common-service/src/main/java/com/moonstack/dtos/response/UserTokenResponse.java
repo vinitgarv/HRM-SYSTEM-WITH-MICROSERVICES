@@ -8,8 +8,9 @@ import lombok.Data;
 public class UserTokenResponse
 {
     private String userId;
-   // private Integer tokenVersion;
+    private String sessionId;
     private String firstName;
     private String lastName;
     private String email;
+    private String accessToken;
 }

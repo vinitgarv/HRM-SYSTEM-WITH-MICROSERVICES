@@ -13,7 +13,7 @@ public interface AuthService
     void register(RegisterRequest request);
     AuthResponse login(AuthRequest authRequest, HttpServletRequest request);
     AuthResponse refreshToken(RefreshTokenRequest request);
-   // String logout(String userId,HttpServletRequest request);
+    String logout(String userId,String sessionId,HttpServletRequest request);
     String changePassword(ChangePasswordRequest changePasswordRequest, String userId);
 
 }

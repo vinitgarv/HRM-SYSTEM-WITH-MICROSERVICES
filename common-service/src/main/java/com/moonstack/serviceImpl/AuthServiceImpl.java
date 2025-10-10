@@ -69,6 +69,9 @@ public class AuthServiceImpl implements AuthService
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private UserService userService;
+
     @Override
     public void register(RegisterRequest request)
     {
@@ -219,6 +222,9 @@ public class AuthServiceImpl implements AuthService
             user = userRepository.findByEmail(authRequest.getEmail())
                     .orElseThrow(() -> new NotFoundException("User not found"));
 
+            if (userService.getCountOfAllLogedInUsers(user.getId())==2)
+                throw new ForbiddenException("DEVICE_LIMIT_EXCEED","Login denied: Only two devices are allowed per user.");
+
             // Device info
             String deviceId = DeviceUtil.generateDeviceId(request);
             String deviceName = DeviceUtil.getDeviceName(request);
@@ -359,7 +365,7 @@ public class AuthServiceImpl implements AuthService
         // 1️⃣ Fetch and validate refresh token
         RefreshToken refreshToken = refreshTokenService.findByToken(requestRefreshToken)
                 .map(refreshTokenService::verifyExpiration)
-                .orElseThrow(() -> new ForbiddenException("REFRESH_TOKEN_EXPIRED"));
+                .orElseThrow(() -> new ForbiddenException("REFRESH_TOKEN_EXPIRED","Refresh Token has expired. Please log in again."));
 
         // 2️⃣ Get the user and session linked to this refresh token
         User user = refreshToken.getUser();
@@ -368,7 +374,7 @@ public class AuthServiceImpl implements AuthService
         UserSessionData sessionData = user.getUserSessionData().stream()
                 .filter(s -> requestRefreshToken.equals(s.getRefreshToken()))
                 .findFirst()
-                .orElseThrow(() -> new ForbiddenException("SESSION_NOT_FOUND"));
+                .orElseThrow(() -> new ForbiddenException("SESSION_NOT_FOUND","Refresh Token has expired. Please log in again."));
 
         DeviceData deviceData = sessionData.getDeviceData();
 
@@ -400,46 +406,54 @@ public class AuthServiceImpl implements AuthService
     }
 
 
-//    @Override
-//    public String logout(String userId,HttpServletRequest request) {
-//        String reason =null;
-//        User user = userRepository.findById(userId)
-//                .orElseThrow(() -> new NotFoundException("User not found"));
-//        try {
-//            RefreshToken refreshToken = refreshTokenRepository.findByUser(user)
-//                    .orElseThrow(() -> new NotFoundException("Invalid Refresh Token"));
-//            refreshToken.setToken(null);
-//            refreshToken.setExpiryDate(null);
-//            refreshToken.setUpdatedAt(LocalDateTime.now());
-//
-//            user.setAccess_token(null);
-//            user.setTokenVersion(user.getTokenVersion() + 1);
-//            userRepository.save(user);
-//
-//            refreshTokenRepository.save(refreshToken);
-//        } catch (Exception ex) {
-//            reason = ex.getMessage();
-//        }
-//
-//        String clientIP = IpUtils.getClientIp(request);
-//
-//        SessionLogsRequest logRequest = SessionLogsRequest.builder()
-//                .action(Message.LOGOUT)
-//                .reason(reason)
-//                .user(user)
-//                .ipAddress(clientIP)
-//                .build();
-//
-//        new Thread(() -> {
-//            try {
-//                sessionLogsService.recordLogin(logRequest);
-//            } catch (Exception logEx) {
-//                logEx.printStackTrace();
-//            }
-//        }).start();
-//
-//        return "Logout Successful";
-//    }
+    @Override
+    public String logout(String userId,String sessionId,HttpServletRequest request) {
+        String reason =null;
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
+        UserSessionData sessionData = userSessionDataRepository.findById(sessionId)
+                .orElseThrow(() -> new NotFoundException("Session Data not found"));
+
+        System.out.println("\n\n\n\n\n Device Data id : "+sessionData.getDeviceData().getDeviceId()+"\n\n\n\n\n");
+        DeviceData deviceData = deviceDataRepository.findById(sessionData.getDeviceData().getId())
+                .orElseThrow(() -> new NotFoundException("Device Data not found"));
+        try {
+            RefreshToken refreshToken = refreshTokenRepository.findByUser(user)
+                    .orElseThrow(() -> new NotFoundException("Invalid Refresh Token"));
+            refreshToken.setToken(null);
+            refreshToken.setExpiryDate(null);
+            refreshToken.setUpdatedAt(LocalDateTime.now());
+
+            userSessionDataRepository.delete(sessionData);
+            deviceDataRepository.delete(deviceData);
+
+            userRepository.save(user);
+
+            refreshTokenRepository.save(refreshToken);
+        } catch (Exception ex) {
+            reason = ex.getMessage();
+        }
+
+        String clientIP = IpUtils.getClientIp(request);
+
+        SessionLogsRequest logRequest = SessionLogsRequest.builder()
+                .action(Message.LOGOUT)
+                .reason(reason)
+                .user(user)
+                .ipAddress(clientIP)
+                .build();
+
+        new Thread(() -> {
+            try {
+                sessionLogsService.recordLogin(logRequest);
+            } catch (Exception logEx) {
+                logEx.printStackTrace();
+            }
+        }).start();
+
+        return "Logout Successful";
+    }
 
     @Override
     public String changePassword(ChangePasswordRequest changePasswordRequest, String userId) {
