@@ -41,11 +41,23 @@ public class SecurityConfig {
                                 "/common/auth/login",
                                 "/common/auth/register",
                                 "/common/auth/refresh-token",
-                                "/common/auth/changePassword/**","/common/employeedetails/**","/common/user/**","/common/message/**"
+                                "/common/auth/changePassword/**",
+                                "/common/employeedetails/**",
+                                "/common/message/**"
                         ).permitAll()
 
-                        // only ADMIN can access these
-                        .pathMatchers("/common/auth/logout","/hrops/attendance/**","/hrops/asset/**","/hrops/asset-allotment/**","/hrops/attendanceApproval/**","/hrops/holiday/**")
+
+                        .pathMatchers("/common/user/getAllLogedInUsers/**",
+                                "/common/user/countOfLogedInUsers/**",
+                                "/common/user/logoutALoggedInUser/**")
+                        .hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_SUPER_ADMIN")
+
+                        .pathMatchers("/common/auth/logout",
+                                "/common/user/usertokenresponse/**",
+                                "/hrops/attendance/**","/hrops/asset/**",
+                                "/hrops/asset-allotment/**",
+                                "/hrops/attendanceApproval/**",
+                                "/hrops/holiday/**")
                         .hasAuthority("ROLE_ADMIN")
                         // everything else must be  v
                         .anyExchange().authenticated()

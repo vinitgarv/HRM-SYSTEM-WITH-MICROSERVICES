@@ -78,10 +78,11 @@ public class AuthController {
     public ResponseEntity<ApiResponse<String>> logout() {
         String token  = jwtTokenUtil.extractToken(request);
         String userId = jwtTokenUtil.extractUserId(token);
+        String sessionId = jwtTokenUtil.extractSessionId(token);
         return ResponseEntity.ok(ApiResponse.<String>builder()
                 .statusCode(HttpStatus.OK.value())
                 .message("success")
-                .data(authService.logout(userId,request))
+                .data(authService.logout(userId,sessionId,request))
                 .build());
     }
 

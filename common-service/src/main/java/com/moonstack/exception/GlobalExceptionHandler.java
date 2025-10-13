@@ -69,7 +69,7 @@ public class GlobalExceptionHandler
     public ResponseEntity<ApiResponse<Object>> handleForbiddenException(ForbiddenException e) {
         ApiResponse<Object> response = ApiResponse.builder()
                 .statusCode(HttpStatus.FORBIDDEN.value())
-                .message("Refresh Token has expired. Please log in again.")
+                .message(e.getData())
                 .multiple(Message.FALSE)
                 .data(e.getMessage())
                 .build();

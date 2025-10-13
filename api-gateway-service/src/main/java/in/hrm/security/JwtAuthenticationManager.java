@@ -79,13 +79,15 @@ public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
 
             String username = claims.getSubject();
             String userId = claims.get("userId", String.class);
+            String sessionId = claims.get("sessionId",String.class);
+
             Integer tokenVersionFromJwt = claims.get("tokenVersion", Integer.class);
 
-            log.info("Authenticating user: {}, tokenVersion: {}", username, tokenVersionFromJwt);
+           // log.info("Authenticating user: {}, tokenVersion: {}", username, tokenVersionFromJwt);
 
             // Fetch UserTokenResponse from COMMON-SERVICE
-            return userTokenService.getUserTokenResponse(userId)
-                    .flatMap(tokenResponse -> validateTokenVersion(tokenResponse, tokenVersionFromJwt, username, claims))
+            return userTokenService.getUserTokenResponse(userId,sessionId)
+                    .flatMap(tokenResponse -> validateTokenVersion(tokenResponse, authToken, username, claims))
                     .switchIfEmpty(Mono.empty());
 
         } catch (Exception e) {
@@ -94,10 +96,10 @@ public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
         }
     }
 
-    private Mono<Authentication> validateTokenVersion(UserTokenResponse tokenResponse, Integer tokenVersionFromJwt,
+    private Mono<Authentication> validateTokenVersion(UserTokenResponse tokenResponse, String authToken,
                                                       String username, Claims claims) {
-        if (!tokenResponse.getTokenVersion().equals(tokenVersionFromJwt)) {
-            log.warn("Token version mismatch for user {}", username);
+        if (!tokenResponse.getAccessToken().equals(authToken)) {
+            log.warn("Invalid token for user {}", username);
             return Mono.empty();
         }
 
