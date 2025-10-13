@@ -8,6 +8,7 @@ import com.moonstack.entity.User;
 import com.moonstack.response.PageResponse;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService
 {
@@ -32,4 +33,6 @@ public interface UserService
     Integer getCountOfAllLogedInUsers(String userId);
 
     String logoutALogedInUser(String deviceId);
+
+    User findByEmail(String email);
 }

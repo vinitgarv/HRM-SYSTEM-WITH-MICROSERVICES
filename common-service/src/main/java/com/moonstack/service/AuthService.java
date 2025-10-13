@@ -13,7 +13,7 @@ public interface AuthService
     String logout(String userId,String sessionId,HttpServletRequest request);
     String changePassword(ChangePasswordRequest changePasswordRequest, String userId);
 
-    String forgotPassword(String userId);
+    String forgotPassword(ForgotPasswordRequest request);
 
     String resetPassword(String userId, ResetPasswordRequest request);
 }

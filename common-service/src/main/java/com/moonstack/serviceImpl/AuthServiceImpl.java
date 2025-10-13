@@ -377,12 +377,11 @@ public class AuthServiceImpl implements AuthService
     }
 
     @Override
-    public String forgotPassword(String userId)
+    public String forgotPassword(ForgotPasswordRequest request)
     {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User not found"));
+        User user = userService.findByEmail(request.getEmail());
 
-        String forgotPasswordLink = "http://localhost:5173/resetPassword/"+userId;
+        String forgotPasswordLink = "http://localhost:5173/resetPassword/"+user.getId();
 
         String emailBody =replacePlaceHoldersForForgotPassword(user, forgotPasswordLink);
 

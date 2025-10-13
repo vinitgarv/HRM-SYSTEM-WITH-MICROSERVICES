@@ -84,9 +84,9 @@ public class AuthController {
                 .build());
     }
 
-    @PostMapping("/forgotPassword/{userId}")
-    public ResponseEntity<ApiResponse<String>> forgotPassword( @PathVariable String  userId) {
-        String response = authService.forgotPassword(userId);
+    @PostMapping("/forgotPassword")
+    public ResponseEntity<ApiResponse<String>> forgotPassword( @RequestBody ForgotPasswordRequest request) {
+        String response = authService.forgotPassword(request);
         return ResponseEntity.ok(ApiResponse.<String>builder()
                 .statusCode(HttpStatus.OK.value())
                 .message(Message.SUCCESS)
