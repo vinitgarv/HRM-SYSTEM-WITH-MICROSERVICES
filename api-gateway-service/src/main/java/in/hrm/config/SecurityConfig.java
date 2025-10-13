@@ -43,7 +43,9 @@ public class SecurityConfig {
                                 "/common/auth/refresh-token",
                                 "/common/auth/changePassword/**",
                                 "/common/employeedetails/**",
-                                "/common/message/**"
+                                "/common/message/**",
+                                "/common/auth/forgotPassword/**",
+                                "/common/auth/resetPassword/**"
                         ).permitAll()
 
 

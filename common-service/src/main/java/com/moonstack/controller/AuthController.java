@@ -1,10 +1,7 @@
 package com.moonstack.controller;
 
 import com.moonstack.constants.Message;
-import com.moonstack.dtos.request.AuthRequest;
-import com.moonstack.dtos.request.ChangePasswordRequest;
-import com.moonstack.dtos.request.RefreshTokenRequest;
-import com.moonstack.dtos.request.RegisterRequest;
+import com.moonstack.dtos.request.*;
 import com.moonstack.dtos.response.AuthResponse;
 import com.moonstack.response.ApiResponse;
 import com.moonstack.service.AuthService;
@@ -87,5 +84,25 @@ public class AuthController {
                 .build());
     }
 
+    @PostMapping("/forgotPassword/{userId}")
+    public ResponseEntity<ApiResponse<String>> forgotPassword( @PathVariable String  userId) {
+        String response = authService.forgotPassword(userId);
+        return ResponseEntity.ok(ApiResponse.<String>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message(Message.SUCCESS)
+                .multiple(false)
+                .data(response)
+                .build());
+    }
 
+    @PostMapping("/resetPassword/{userId}")
+    public ResponseEntity<ApiResponse<String>> resetPassword(@PathVariable String  userId, @RequestBody ResetPasswordRequest request) {
+        String response = authService.resetPassword(userId,request);
+        return ResponseEntity.ok(ApiResponse.<String>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message(Message.SUCCESS)
+                .multiple(false)
+                .data(response)
+                .build());
+    }
 }

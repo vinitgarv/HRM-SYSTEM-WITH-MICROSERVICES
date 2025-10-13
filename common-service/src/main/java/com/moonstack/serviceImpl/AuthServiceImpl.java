@@ -4,10 +4,7 @@ import com.moonstack.constants.Message;
 import com.moonstack.dtos.request.*;
 import com.moonstack.dtos.response.AuthResponse;
 import com.moonstack.entity.*;
-import com.moonstack.exception.AlreadyPresentException;
-import com.moonstack.exception.ForbiddenException;
-import com.moonstack.exception.NotFoundException;
-import com.moonstack.exception.UnauthorizedException;
+import com.moonstack.exception.*;
 import com.moonstack.repository.DeviceDataRepository;
 import com.moonstack.repository.RefreshTokenRepository;
 import com.moonstack.repository.UserRepository;
@@ -101,7 +98,7 @@ public class AuthServiceImpl implements AuthService
 
         String changePasswordLink = "http://localhost:5173/changepassword/"+user.getId()+"?tempPassword=" + user.getTempPassword();
 
-        String emailBody =replacePlaceHolders(user, changePasswordLink);
+        String emailBody =replacePlaceHoldersForChangePassword(user, changePasswordLink);
 
         EmailRequest emailRequest = EmailRequest.builder()
                 .to(request.getEmail())
@@ -379,16 +376,85 @@ public class AuthServiceImpl implements AuthService
         return "Password Changed Successfully";
     }
 
-    private String replacePlaceHolders(User user, String url)
+    @Override
+    public String forgotPassword(String userId)
     {
-        String content = getHtmlContent();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
+        String forgotPasswordLink = "http://localhost:5173/resetPassword/"+userId;
+
+        String emailBody =replacePlaceHoldersForForgotPassword(user, forgotPasswordLink);
+
+        EmailRequest emailRequest = EmailRequest.builder()
+                .to(user.getEmail())
+                .subject("HRM System : Reset Password")
+                .message(emailBody)
+                .build();
+
+        new Thread(() ->
+        {
+            emailService.sendEmail(emailRequest);
+        }).start();
+
+        return "Email sent successfully";
+    }
+
+    @Override
+    public String resetPassword(String userId, ResetPasswordRequest request)
+    {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
+        if (!request.getNewPassword().equals(request.getConfirmPassword()))
+            throw new RequestFailedException("New Password and confirm password must be same");
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+
+        userRepository.save(user);
+
+        String emailBody =replacePlaceHoldersForResetPassword(user);
+
+        EmailRequest emailRequest = EmailRequest.builder()
+                .to(user.getEmail())
+                .subject("HRM System : Password Reset Successfully")
+                .message(emailBody)
+                .build();
+
+        new Thread(() ->
+        {
+            emailService.sendEmail(emailRequest);
+        }).start();
+
+        return "Password Reset Successfully";
+    }
+
+    private String replacePlaceHoldersForChangePassword(User user, String url)
+    {
+        String content = changePasswordHtmlContent();
         String updatedContent = content.replace(Message.USER_NAME_PLACEHOLDER, user.getFirstName())
                 .replace(Message.SENDER_NAME_PLACEHOLDER, Message.SENDER_NAME)
                 .replace(Message.URL_PLACEHOLDER, url)
                 .replace(Message.TEMP_PASSWORD_PLACEHOLDER, user.getTempPassword());
         return updatedContent;
     }
-    private  String getHtmlContent()
+
+    private String replacePlaceHoldersForForgotPassword(User user,String url)
+    {
+        String content = forgotPasswordHtmlContent();
+        String updatedContent = content.replace(Message.USER_NAME_PLACEHOLDER,user.getFirstName())
+                .replace(Message.RESET_PASS_URL_PLACEHOLDER,url);
+          return updatedContent;
+    }
+
+    private String replacePlaceHoldersForResetPassword(User user)
+    {
+        String content = resetPasswordHtmlContent();
+        String updatedContent = content.replace(Message.USER_NAME_PLACEHOLDER,user.getFirstName());
+        return updatedContent;
+    }
+
+    private  String changePasswordHtmlContent()
     {
         return "<html lang=\"en\">\n" +
                 "<head>\n" +
@@ -458,6 +524,190 @@ public class AuthServiceImpl implements AuthService
                 "      <SENDER_NAME> — Please do not reply to this automated email.\n" +
                 "    </div>\n" +
                 "  </div>\n" +
+                "</body>\n" +
+                "</html>\n";
+    }
+
+    private String forgotPasswordHtmlContent()
+    {
+        return "<html lang=\"en\">\n" +
+                "<head>\n" +
+                "    <meta charset=\"UTF-8\">\n" +
+                "    <title>Password Reset Request - Moonstack HRM</title>\n" +
+                "    <style>\n" +
+                "        body {\n" +
+                "            font-family: 'Segoe UI', Arial, sans-serif;\n" +
+                "            background-color: #f4f4f7;\n" +
+                "            margin: 0;\n" +
+                "            padding: 0;\n" +
+                "        }\n" +
+                "\n" +
+                "        .email-container {\n" +
+                "            max-width: 600px;\n" +
+                "            margin: 30px auto;\n" +
+                "            background-color: #ffffff;\n" +
+                "            border-radius: 10px;\n" +
+                "            box-shadow: 0 2px 10px rgba(0,0,0,0.1);\n" +
+                "            overflow: hidden;\n" +
+                "        }\n" +
+                "\n" +
+                "        .header {\n" +
+                "            background-color: #1b5e20; /* dark green */\n" +
+                "            color: #ffffff;\n" +
+                "            text-align: center;\n" +
+                "            padding: 20px;\n" +
+                "        }\n" +
+                "\n" +
+                "        .header h1 {\n" +
+                "            margin: 0;\n" +
+                "            font-size: 22px;\n" +
+                "        }\n" +
+                "\n" +
+                "        .content {\n" +
+                "            padding: 30px;\n" +
+                "            color: #333333;\n" +
+                "            line-height: 1.6;\n" +
+                "        }\n" +
+                "\n" +
+                "        .content p {\n" +
+                "            margin: 10px 0;\n" +
+                "        }\n" +
+                "\n" +
+                "        .reset-link {\n" +
+                "            color: #2e7d32;\n" +
+                "            font-weight: bold;\n" +
+                "            text-decoration: none;\n" +
+                "            word-break: break-all;\n" +
+                "        }\n" +
+                "\n" +
+                "        .reset-link:hover {\n" +
+                "            text-decoration: underline;\n" +
+                "            color: #256628;\n" +
+                "        }\n" +
+                "\n" +
+                "        .footer {\n" +
+                "            text-align: center;\n" +
+                "            font-size: 12px;\n" +
+                "            color: #999999;\n" +
+                "            padding: 15px;\n" +
+                "            background-color: #f4f4f7;\n" +
+                "        }\n" +
+                "\n" +
+                "        .note {\n" +
+                "            font-size: 13px;\n" +
+                "            color: #777;\n" +
+                "            margin-top: 15px;\n" +
+                "        }\n" +
+                "    </style>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "\n" +
+                "<div class=\"email-container\">\n" +
+                "    <div class=\"header\">\n" +
+                "        <h1>Reset Your Password Securely</h1>\n" +
+                "    </div>\n" +
+                "\n" +
+                "    <div class=\"content\">\n" +
+                "        <p>Hi <b><USER_NAME></b>,</p>\n" +
+                "\n" +
+                "        <p>We received a request to reset your password for your Moonstack HRM account.</p>\n" +
+                "\n" +
+                "        <p>Please click the link below to reset your password:</p>\n" +
+                "\n" +
+                "        <p><a href=\"<RESET_PASS_URL>\" class=\"reset-link\"><RESET_PASS_URL></a></p>\n" +
+                "\n" +
+                "        <p>If you did not request a password reset, please ignore this email.</p>\n" +
+                "\n" +
+                "        <p>Best regards,<br><b>Moonstack Pvt. Ltd.</b></p>\n" +
+                "    </div>\n" +
+                "\n" +
+                "    <div class=\"footer\">\n" +
+                "        &copy; 2025 HRM System. All rights reserved.\n" +
+                "    </div>\n" +
+                "</div>\n" +
+                "\n" +
+                "</body>\n" +
+                "</html>\n";
+    }
+    
+    private String resetPasswordHtmlContent()
+    {
+        return "<html lang=\"en\">\n" +
+                "<head>\n" +
+                "    <meta charset=\"UTF-8\">\n" +
+                "    <title>Password Changed Successfully - Moonstack HRM</title>\n" +
+                "    <style>\n" +
+                "        body {\n" +
+                "            font-family: 'Segoe UI', Arial, sans-serif;\n" +
+                "            background-color: #f4f4f7;\n" +
+                "            margin: 0;\n" +
+                "            padding: 0;\n" +
+                "        }\n" +
+                "\n" +
+                "        .email-container {\n" +
+                "            max-width: 600px;\n" +
+                "            margin: 30px auto;\n" +
+                "            background-color: #ffffff;\n" +
+                "            border-radius: 10px;\n" +
+                "            box-shadow: 0 2px 10px rgba(0,0,0,0.1);\n" +
+                "            overflow: hidden;\n" +
+                "        }\n" +
+                "\n" +
+                "        .header {\n" +
+                "            background-color: #1b5e20; /* dark green */\n" +
+                "            color: #ffffff;\n" +
+                "            text-align: center;\n" +
+                "            padding: 20px;\n" +
+                "        }\n" +
+                "\n" +
+                "        .header h1 {\n" +
+                "            margin: 0;\n" +
+                "            font-size: 22px;\n" +
+                "        }\n" +
+                "\n" +
+                "        .content {\n" +
+                "            padding: 30px;\n" +
+                "            color: #333333;\n" +
+                "            line-height: 1.6;\n" +
+                "        }\n" +
+                "\n" +
+                "        .content p {\n" +
+                "            margin: 10px 0;\n" +
+                "        }\n" +
+                "\n" +
+                "        .footer {\n" +
+                "            text-align: center;\n" +
+                "            font-size: 12px;\n" +
+                "            color: #999999;\n" +
+                "            padding: 15px;\n" +
+                "            background-color: #f4f4f7;\n" +
+                "        }\n" +
+                "    </style>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "\n" +
+                "<div class=\"email-container\">\n" +
+                "    <div class=\"header\">\n" +
+                "        <h1>Password Changed Successfully</h1>\n" +
+                "    </div>\n" +
+                "\n" +
+                "    <div class=\"content\">\n" +
+                "        <p>Hi <b><USER_NAME></b>,</p>\n" +
+                "\n" +
+                "        <p>This is a confirmation that the password for your <b>Moonstack HRM</b> account was changed successfully.</p>\n" +
+                "\n" +
+                "        <p>If you made this change, no further action is required.</p>\n" +
+                "\n" +
+                "        <p>If you did not change your password, please contact our support team immediately.</p>\n" +
+                "\n" +
+                "        <p>Best regards,<br><b>Moonstack Pvt. Ltd.</b></p>\n" +
+                "    </div>\n" +
+                "\n" +
+                "    <div class=\"footer\">\n" +
+                "        &copy; 2025 HRM System. All rights reserved.\n" +
+                "    </div>\n" +
+                "</div>\n" +
+                "\n" +
                 "</body>\n" +
                 "</html>\n";
     }

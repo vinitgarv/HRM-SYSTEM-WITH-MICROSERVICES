@@ -1,9 +1,6 @@
 package com.moonstack.service;
 
-import com.moonstack.dtos.request.AuthRequest;
-import com.moonstack.dtos.request.ChangePasswordRequest;
-import com.moonstack.dtos.request.RefreshTokenRequest;
-import com.moonstack.dtos.request.RegisterRequest;
+import com.moonstack.dtos.request.*;
 import com.moonstack.dtos.response.AuthResponse;
 import com.moonstack.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,4 +13,7 @@ public interface AuthService
     String logout(String userId,String sessionId,HttpServletRequest request);
     String changePassword(ChangePasswordRequest changePasswordRequest, String userId);
 
+    String forgotPassword(String userId);
+
+    String resetPassword(String userId, ResetPasswordRequest request);
 }

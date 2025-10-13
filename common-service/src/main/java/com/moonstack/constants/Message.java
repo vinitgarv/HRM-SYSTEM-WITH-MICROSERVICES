@@ -131,6 +131,7 @@ public class Message
     public static String  URL_PLACEHOLDER = "<URL>";
     public static String  TEMP_PASSWORD_PLACEHOLDER = "<TEMP_PASSWORD>";
     public static String  SENDER_NAME_PLACEHOLDER = "<SENDER_NAME>";
+    public static String RESET_PASS_URL_PLACEHOLDER = "<RESET_PASS_URL>";
 
     public static String SENDER_NAME = "Moonstack Pvt. Ltd.";
 }
