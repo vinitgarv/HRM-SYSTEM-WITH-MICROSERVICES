@@ -9,10 +9,10 @@
         <outputRelativeToContentRoot value="true" />
         <module name="common-service" />
         <module name="api-gateway-service" />
-        <module name="SpringbootSecurityJwt4DB" />
-        <module name="hr-operations-service" />
         <module name="config-server-service" />
+        <module name="SpringbootSecurityJwt4DB" />
         <module name="service-discovery" />
+        <module name="hr-operations-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

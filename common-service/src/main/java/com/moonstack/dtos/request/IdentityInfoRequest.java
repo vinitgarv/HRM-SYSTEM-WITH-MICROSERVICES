@@ -12,29 +12,30 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class IdentityInfoRequest {
+    private String documentType;
+    private String documentNumber;
+    private String fileName;
+    private String fileType;
 
-    private String uan;
-    private String pan;
-    private String aadhar;
+    public void validate() {
 
-    public void validate()
-    {
-        // UAN (Universal Account Number) → 12 digits
-        if (uan == null || !uan.matches("^[0-9]{12}$"))
-        {
-            throw new RequestFailedException(Message.UAN + Message.TAB + Message.IS + Message.TAB + Message.INVALID);
+        if (documentType == null || documentType.isEmpty() ||
+                !(documentType.equalsIgnoreCase("AADHAAR") ||
+                        documentType.equalsIgnoreCase("PAN") ||
+                        documentType.equalsIgnoreCase("UAN"))) {
+            throw new RequestFailedException("Document Type" + Message.TAB + Message.IS + Message.TAB + Message.INVALID);
         }
 
-        // PAN (Permanent Account Number) → 10 chars (AAAAA9999A)
-        if (pan == null || !pan.matches("^[A-Z]{5}[0-9]{4}[A-Z]{1}$"))
-        {
-            throw new RequestFailedException(Message.PAN + Message.TAB + Message.IS + Message.TAB + Message.INVALID);
+        if (documentNumber == null || documentNumber.trim().isEmpty()) {
+            throw new RequestFailedException("Document Number" + Message.TAB + Message.IS + Message.TAB + Message.REQUIRED);
         }
 
-        // Aadhaar → 12 digits, not starting with 0 or 1
-        if (aadhar == null || !aadhar.matches("^[2-9]{1}[0-9]{11}$"))
-        {
-            throw new RequestFailedException(Message.AADHAR + Message.TAB + Message.IS + Message.TAB + Message.INVALID);
+        if (fileName == null || fileName.trim().isEmpty()) {
+            throw new RequestFailedException("File Name" + Message.TAB + Message.IS + Message.TAB + Message.REQUIRED);
+        }
+
+        if (fileType == null || fileType.trim().isEmpty()) {
+            throw new RequestFailedException("File Type" + Message.TAB + Message.IS + Message.TAB + Message.REQUIRED);
         }
     }
 }

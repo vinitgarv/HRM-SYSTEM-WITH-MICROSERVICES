@@ -17,7 +17,7 @@ public class EmployeeDetailsResponse
     private WorkInfoResponse workInfo;
     private List<HierarchyInfoResponse> hierarchyInfos;
     private PersonalDetailResponse personalDetail;
-    private IdentityInfoResponse identityInfo;
+    private List<IdentityInfoResponse> identityInfo;
     private ContactDetailResponse contactDetail;
     private SystemFieldResponse systemField;
     private List<WorkExperienceResponse> workExperience;

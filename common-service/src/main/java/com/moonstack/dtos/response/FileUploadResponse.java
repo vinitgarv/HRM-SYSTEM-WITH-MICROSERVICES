@@ -7,15 +7,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class IdentityInfoResponse
-{
-    private String id;
-    private String documentType;
-    private String documentNumber;
-    private String status;
+@AllArgsConstructor
+public class FileUploadResponse {
     private String fileName;
     private String fileType;
-    private String remark;
 }

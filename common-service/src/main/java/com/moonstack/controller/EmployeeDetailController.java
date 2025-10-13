@@ -17,6 +17,8 @@ public class EmployeeDetailController {
     @Autowired
     EmployeeDetailsService employeeDetailsService;
 
+
+    // TODO Remove add from the endpoint
     @PostMapping("/add/{userId}")
     public ResponseEntity<ApiResponse<String>> register(@RequestBody EmployeeDetailsRequest request, @PathVariable String userId)
     {

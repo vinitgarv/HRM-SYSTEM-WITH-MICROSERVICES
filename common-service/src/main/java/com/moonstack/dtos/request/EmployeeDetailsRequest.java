@@ -13,11 +13,10 @@ import java.util.List;
 @NoArgsConstructor
 public class EmployeeDetailsRequest
 {
-
     private WorkInfoRequest workInfo;
     private List<HierarchyInfoRequest> hierarchyInfos;
     private PersonalDetailRequest personalDetail;
-    private IdentityInfoRequest identityInfo;
+    private List<IdentityInfoRequest> identityInfo;
     private ContactDetailRequest contactDetail;
     private SystemFieldRequest systemField;
     private List<WorkExperienceRequest> workExperience;
@@ -38,11 +37,6 @@ public class EmployeeDetailsRequest
         }
         personalDetail.validate();
 
-        if (identityInfo == null) {
-            throw new RequestFailedException(Message.IDENTITY_INFO + Message.TAB + Message.IS + Message.TAB + Message.EMPTY);
-        }
-        identityInfo.validate();
-
         if (contactDetail == null) {
             throw new RequestFailedException(Message.CONTACT_DETAIL + Message.TAB + Message.IS + Message.TAB + Message.EMPTY);
         }
@@ -61,6 +55,10 @@ public class EmployeeDetailsRequest
         // Validate work experience list
         if (workExperience != null) {
             workExperience.forEach(WorkExperienceRequest::validate);
+        }
+
+        if(identityInfo != null) {
+            identityInfo.forEach(IdentityInfoRequest::validate);
         }
 
         // Validate education details list

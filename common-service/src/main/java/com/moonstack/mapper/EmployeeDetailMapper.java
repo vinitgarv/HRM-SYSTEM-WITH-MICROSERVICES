@@ -28,7 +28,6 @@ public class EmployeeDetailMapper {
 
                 .personalDetail(PersonalDetailMapper.personalDetailIntoPersonalDetailResponse(user.getPersonalDetail()))
 
-                .identityInfo(IdentityInfoMapper.identityInfoIntoIdentityInfoResponse(user.getIdentityInfo()))
 
                 .contactDetail(ContactDetailMapper.contactDetailIntoContactDetailResponse(user.getContactDetail()))
 
@@ -36,6 +35,10 @@ public class EmployeeDetailMapper {
 
                 .workExperience(user.getWorkExperiences().stream()
                         .map(WorkExperienceMapper::workExperienceIntoWorkExperienceResponse)
+                        .toList())
+
+                .identityInfo(user.getIdentityInfo().stream()
+                        .map(IdentityInfoMapper::identityInfoIntoIdentityInfoResponse)
                         .toList())
 
                 .educationDetails(user.getEducationDetails().stream()

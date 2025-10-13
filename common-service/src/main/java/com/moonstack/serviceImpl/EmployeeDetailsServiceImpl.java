@@ -67,16 +67,9 @@ public class EmployeeDetailsServiceImpl implements EmployeeDetailsService {
                 hierarchyInfoService.addHierarchyInfo(hi);
             });
 
-
             PersonalDetail pd = PersonalDetailMapper.personalDetailRequestIntoPersonalDetail(request.getPersonalDetail());
             pd.setUser(user);
             personalDetailService.addPersonalDetail(pd);
-
-
-            IdentityInfo ii = IdentityInfoMapper.identityInfoRequestIntoIdentityInfo(request.getIdentityInfo());
-            ii.setUser(user);
-            identityInfoService.addIdentityInfo(ii);
-
 
             ContactDetail cd = ContactDetailMapper.contactDetailRequestIntoContactDetail(request.getContactDetail());
             cd.setUser(user);
@@ -87,13 +80,17 @@ public class EmployeeDetailsServiceImpl implements EmployeeDetailsService {
             sf.setUser(user);
             systemFieldService.addSystemField(sf);
 
-
             request.getWorkExperience().forEach(weReq -> {
                 WorkExperience we = WorkExperienceMapper.workExperienceRequestIntoWorkExperience(weReq);
                 we.setUser(user);
                 workExperienceService.addWorkExperience(we);
             });
 
+           request.getIdentityInfo().forEach(iiReq -> {
+            IdentityInfo ii = IdentityInfoMapper.identityInfoRequestIntoIdentityInfo(iiReq);
+            ii.setUser(user);
+            identityInfoService.addIdentityInfo(ii);
+           });
 
             request.getEducationDetails().forEach(edReq -> {
                 EducationDetail ed = EducationDetailMapper.educationDetailRequestIntoEducationDetail(edReq);
@@ -132,10 +129,6 @@ public class EmployeeDetailsServiceImpl implements EmployeeDetailsService {
         personalDetail.setUser(user);
         user.setPersonalDetail(personalDetail);
 
-        IdentityInfo identityInfo = IdentityInfoMapper.identityInfoRequestIntoIdentityInfo(request.getIdentityInfo());
-        identityInfo.setUser(user);
-        user.setIdentityInfo(identityInfo);
-
         ContactDetail contactDetail = ContactDetailMapper.contactDetailRequestIntoContactDetail(request.getContactDetail());
         contactDetail.setUser(user);
         user.setContactDetail(contactDetail);
@@ -149,6 +142,15 @@ public class EmployeeDetailsServiceImpl implements EmployeeDetailsService {
                     HierarchyInfo hierarchyInfo = HierarchyInfoMapper.hierarchyInfoRequestIntoHierarchyInfo(hi);
                     hierarchyInfo.setUser(user);
                     return hierarchyInfo;
+                }).toList();
+        user.getHierarchyInfos().clear();
+        user.getHierarchyInfos().addAll(hierarchyInfos);
+
+        List<IdentityInfo> identityInfos = request.getIdentityInfo().stream()
+                .map(ii -> {
+                    IdentityInfo identityInfo = IdentityInfoMapper.identityInfoRequestIntoIdentityInfo(ii);
+                    identityInfo.setUser(user);
+                    return identityInfo;
                 }).toList();
         user.getHierarchyInfos().clear();
         user.getHierarchyInfos().addAll(hierarchyInfos);
