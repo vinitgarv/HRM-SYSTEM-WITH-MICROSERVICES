@@ -58,6 +58,7 @@ public class AuthController {
         return ResponseEntity.ok(ApiResponse.<String>builder()
                 .statusCode(HttpStatus.OK.value())
                 .message(Message.SUCCESS)
+                .multiple(false)
                 .data(response)
                 .build());
     }
