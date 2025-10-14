@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/employeeOvertime")
+@RequestMapping("/overtime")
 public class EmployeeOvertimeController {
 
     @Autowired
     private EmployeeOvertimeService employeeOvertimeService;
 
-    @PostMapping("/createEmployeeOverTIme/{userId}")
+    @PostMapping("/{userId}")
     public ResponseEntity<ApiResponse<String>> createAttendanceApprovalRequest(@RequestBody List<EmployeeOvertimeRequest> employeeOvertimeRequests, @PathVariable String userId) {
         ApiResponse<String> response = ApiResponse.<String>builder()
                 .statusCode(HttpStatus.OK.value())
@@ -53,7 +53,7 @@ public class EmployeeOvertimeController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @GetMapping("/getAllEmployeeOverTime")
+    @GetMapping
     public ResponseEntity<ApiResponse<List<EmployeeOverTimeResponse>>> getAllEmplpoyeesOverTIme() {
         ApiResponse<List<EmployeeOverTimeResponse>> response = ApiResponse.<List<EmployeeOverTimeResponse>>builder()
                 .statusCode(HttpStatus.OK.value())
@@ -64,7 +64,7 @@ public class EmployeeOvertimeController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @GetMapping("/findById/{overTimeId}")
+    @GetMapping("/{overTimeId}")
     public ResponseEntity<ApiResponse<EmployeeOverTimeResponse>> getLeaveById(@PathVariable String overTimeId) {
         ApiResponse<EmployeeOverTimeResponse> response = ApiResponse.<EmployeeOverTimeResponse>builder()
                 .statusCode(HttpStatus.OK.value())
@@ -75,7 +75,7 @@ public class EmployeeOvertimeController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @DeleteMapping("/deleteByID/{overTimeId}")
+    @DeleteMapping("/{overTimeId}")
     public ResponseEntity<ApiResponse<String>> deleteLeaveRequestById(@PathVariable String overTimeId) {
         ApiResponse<String> response = ApiResponse.<String>builder()
                 .statusCode(HttpStatus.OK.value())
@@ -86,7 +86,7 @@ public class EmployeeOvertimeController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @PutMapping("/updateById/{overTimeId}")
+    @PutMapping("/{overTimeId}")
     public ResponseEntity<ApiResponse<EmployeeOverTimeResponse>> updateLeaveRequestById(@PathVariable String overTimeId, @RequestBody EmployeeOvertimeRequest employeeOvertimeRequestRequest) {
         ApiResponse<EmployeeOverTimeResponse> response = ApiResponse.<EmployeeOverTimeResponse>builder()
                 .statusCode(HttpStatus.OK.value())

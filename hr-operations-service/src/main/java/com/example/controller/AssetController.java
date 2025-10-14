@@ -21,7 +21,7 @@ public class AssetController
     @Autowired
     private AssetService assetService;
 
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<ApiResponse<AssetResponse>> add(@RequestBody AssetRequest assetRequest) {
         ApiResponse<AssetResponse> response = ApiResponse.<AssetResponse>builder()
                 .statusCode(HttpStatus.OK.value())
@@ -43,7 +43,7 @@ public class AssetController
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<ApiResponse<List<AssetResponse>>> getAll() {
         ApiResponse<List<AssetResponse>> response = ApiResponse.<List<AssetResponse>>builder()
                 .statusCode(HttpStatus.OK.value())

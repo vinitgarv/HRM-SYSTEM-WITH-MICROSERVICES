@@ -41,24 +41,28 @@ public class SecurityConfig {
                                 "/common/auth/login",
                                 "/common/auth/register",
                                 "/common/auth/refresh-token",
-                                "/common/auth/changePassword/**",
+                                "/common/auth/change-password/**",
                                 "/common/employeedetails/**",
                                 "/common/message/**",
-                                "/common/auth/forgotPassword/**",
-                                "/common/auth/resetPassword/**"
+                                "/common/auth/forgot-password/**",
+                                "/common/auth/reset-password/**"
                         ).permitAll()
 
 
-                        .pathMatchers("/common/user/getAllLogedInUsers/**",
-                                "/common/user/countOfLogedInUsers/**",
-                                "/common/user/logoutALoggedInUser/**")
+                        .pathMatchers("/common/user/log-in-users/**",
+                                "/common/user/total-log-in-users/**",
+                                "/common/user/logout/**",
+                                "/hrops/employee-leave/**")
                         .hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_SUPER_ADMIN")
 
                         .pathMatchers("/common/auth/logout",
-                                "/common/user/usertokenresponse/**",
-                                "/hrops/attendance/**","/hrops/asset/**",
+                                "/common/user/token-response/**",
+                                "/hrops/attendance/**",
+                                "/hrops/asset/**",
+                                "/hrops/time-sheet",
                                 "/hrops/asset-allotment/**",
-                                "/hrops/attendanceApproval/**",
+                                "/hrops/attendance-approval/**",
+                                "/hrops/overtime/**",
                                 "/hrops/holiday/**")
                         .hasAuthority("ROLE_ADMIN")
                         // everything else must be  v

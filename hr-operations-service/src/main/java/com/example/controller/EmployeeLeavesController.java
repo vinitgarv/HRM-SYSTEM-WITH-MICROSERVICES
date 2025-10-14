@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/employeeLeave")
+@RequestMapping("/employee-leave")
 public class EmployeeLeavesController {
     @Autowired
     private EmployeeLeavesService employeeLeavesService;
 
-    @PostMapping("/createEmployeeLeave/{userId}")
+    @PostMapping("/{userId}")
     public ResponseEntity<ApiResponse<String>> createAttendanceApprovalRequest(@RequestBody List<EmployeeLeavesRequest> employeeLeavesRequest, @PathVariable String userId) {
         ApiResponse<String> response = ApiResponse.<String>builder()
                 .statusCode(HttpStatus.OK.value())
@@ -30,7 +30,7 @@ public class EmployeeLeavesController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @GetMapping("/getAllEmployeeLeaves")
+    @GetMapping
     public ResponseEntity<ApiResponse<EmployeeLeavesResponse>> getAllEmplpoyeesLeaves() {
         ApiResponse<EmployeeLeavesResponse> response = ApiResponse.<EmployeeLeavesResponse>builder()
                 .statusCode(HttpStatus.OK.value())
@@ -65,7 +65,7 @@ public class EmployeeLeavesController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @GetMapping("/findById/{leaveId}")
+    @GetMapping("/{leaveId}")
     public ResponseEntity<ApiResponse<LeaveResponse>> getLeaveById(@PathVariable String leaveId) {
         ApiResponse<LeaveResponse> response = ApiResponse.<LeaveResponse>builder()
                 .statusCode(HttpStatus.OK.value())
@@ -76,7 +76,7 @@ public class EmployeeLeavesController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @DeleteMapping("/deleteByID/{leaveId}")
+    @DeleteMapping("/{leaveId}")
     public ResponseEntity<ApiResponse<String>> deleteLeaveRequestById(@PathVariable String leaveId) {
         ApiResponse<String> response = ApiResponse.<String>builder()
                 .statusCode(HttpStatus.OK.value())
@@ -87,7 +87,7 @@ public class EmployeeLeavesController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @PutMapping("/updateById/{leaveId}")
+    @PutMapping("/{leaveId}")
     public ResponseEntity<ApiResponse<LeaveResponse>> updateLeaveRequestById(@PathVariable String leaveId, @RequestBody EmployeeLeavesRequest employeeLeavesRequest) {
         ApiResponse<LeaveResponse> response = ApiResponse.<LeaveResponse>builder()
                 .statusCode(HttpStatus.OK.value())

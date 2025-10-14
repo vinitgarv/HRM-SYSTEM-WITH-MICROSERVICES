@@ -17,13 +17,13 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/timeSheet")
+@RequestMapping("/time-sheet")
 public class TimeSheetController
 {
     @Autowired
     private TimeSheetService timeSheetService;
 
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<ApiResponse<TimeSheetResponse>> add(@RequestBody TimeSheetRequest request) {
         ApiResponse<TimeSheetResponse> response = ApiResponse.<TimeSheetResponse>builder()
                 .statusCode(HttpStatus.OK.value())
@@ -34,7 +34,7 @@ public class TimeSheetController
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @GetMapping("/getById/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<TimeSheetResponse>> getById(@PathVariable("id") String id) {
         ApiResponse<TimeSheetResponse> response = ApiResponse.<TimeSheetResponse>builder()
                 .statusCode(HttpStatus.OK.value())
@@ -45,7 +45,7 @@ public class TimeSheetController
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @GetMapping("/getAll")
+    @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<TimeSheetResponse>>> getAll(@RequestParam(defaultValue = "0") Integer page,
                                                                                        @RequestParam(defaultValue = "10") Integer size) {
         ApiResponse<PageResponse<TimeSheetResponse>> response = ApiResponse.<PageResponse<TimeSheetResponse>>builder()
@@ -57,7 +57,7 @@ public class TimeSheetController
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ApiResponse<TimeSheetResponse> update(@PathVariable("id") String id, @RequestBody TimeSheetRequest request) {
         ApiResponse<TimeSheetResponse> response = ApiResponse.<TimeSheetResponse>builder()
                 .statusCode(HttpStatus.OK.value())
@@ -68,7 +68,7 @@ public class TimeSheetController
         return response;
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ApiResponse<String> delete(@PathVariable("id") String id) {
         ApiResponse<String> response = ApiResponse.<String>builder()
                 .statusCode(HttpStatus.OK.value())

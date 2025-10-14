@@ -49,7 +49,7 @@ public class AuthController {
                 .build());
     }
 
-    @PostMapping("/changePassword/{userId}")
+    @PostMapping("/change-password/{userId}")
     public ResponseEntity<ApiResponse<String>> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest, @PathVariable String  userId) {
         String response = authService.changePassword(changePasswordRequest,userId);
         return ResponseEntity.ok(ApiResponse.<String>builder()
@@ -84,7 +84,7 @@ public class AuthController {
                 .build());
     }
 
-    @PostMapping("/forgotPassword")
+    @PostMapping("/forgot-password")
     public ResponseEntity<ApiResponse<String>> forgotPassword( @RequestBody ForgotPasswordRequest request) {
         String response = authService.forgotPassword(request);
         return ResponseEntity.ok(ApiResponse.<String>builder()
@@ -95,7 +95,7 @@ public class AuthController {
                 .build());
     }
 
-    @PostMapping("/resetPassword/{userId}")
+    @PostMapping("/reset-password/{userId}")
     public ResponseEntity<ApiResponse<String>> resetPassword(@PathVariable String  userId, @RequestBody ResetPasswordRequest request) {
         String response = authService.resetPassword(userId,request);
         return ResponseEntity.ok(ApiResponse.<String>builder()
