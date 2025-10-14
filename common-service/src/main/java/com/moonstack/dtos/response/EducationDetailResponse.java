@@ -17,4 +17,6 @@ public class EducationDetailResponse
     private String degreeOrDiploma;
     private String specialization;
     private LocalDate completionDate;
+    private String fileName;
+    private String fileType;
 }

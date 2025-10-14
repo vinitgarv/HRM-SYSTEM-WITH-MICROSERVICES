@@ -13,10 +13,12 @@ import java.util.List;
 @NoArgsConstructor
 public class EmployeeDetailsRequest
 {
+    private DocumentRequest profilePhoto;
+    private DocumentRequest resume;
     private WorkInfoRequest workInfo;
     private List<HierarchyInfoRequest> hierarchyInfos;
     private PersonalDetailRequest personalDetail;
-    private List<IdentityInfoRequest> identityInfo;
+    private List<IdentityInfoRequest> identityInfo; 
     private ContactDetailRequest contactDetail;
     private SystemFieldRequest systemField;
     private List<WorkExperienceRequest> workExperience;
@@ -55,10 +57,6 @@ public class EmployeeDetailsRequest
         // Validate work experience list
         if (workExperience != null) {
             workExperience.forEach(WorkExperienceRequest::validate);
-        }
-
-        if(identityInfo != null) {
-            identityInfo.forEach(IdentityInfoRequest::validate);
         }
 
         // Validate education details list

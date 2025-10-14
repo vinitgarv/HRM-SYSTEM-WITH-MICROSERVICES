@@ -29,6 +29,10 @@ public class User extends AbstractPersistable
     private String email;
     private String tempPassword;
     private String password;
+    private String resumeFileName;
+    private String resumeFileType;
+    private String profilePhotoFileName;
+    private String profilePhotoFileType;
 
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)

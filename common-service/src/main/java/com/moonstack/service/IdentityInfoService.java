@@ -11,8 +11,6 @@ public interface IdentityInfoService {
 
     void delete(User user);
 
-    public FileUploadResponse uploadIdentityInfoFile(MultipartFile file, String employeeId, String type);
-
     String verifyDocument(String documentId);
 
     String rejectDocument(String documentId, RejectDocumentRequest request);

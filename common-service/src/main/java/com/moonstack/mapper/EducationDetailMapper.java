@@ -17,6 +17,8 @@ public class EducationDetailMapper
                 .degreeOrDiploma(request.getDegreeOrDiploma())
                 .specialization(request.getSpecialization())
                 .completionDate(request.getCompletionDate())
+                .fileName(request.getFileName())
+                .fileType(request.getFileType())
                 .isActive(true)
                 .deleted(false)
                 .build();
@@ -29,6 +31,8 @@ public class EducationDetailMapper
                 .degreeOrDiploma(educationDetail.getDegreeOrDiploma())
                 .specialization(educationDetail.getSpecialization())
                 .completionDate(educationDetail.getCompletionDate())
+                .fileName(educationDetail.getFileName())
+                .fileType(educationDetail.getFileType())
                 .build();
     }
 }

@@ -1,10 +1,10 @@
 package com.moonstack.mapper;
 
 import com.moonstack.dtos.response.EmployeeDetailsResponse;
+import com.moonstack.dtos.response.FileUploadResponse;
 import com.moonstack.dtos.response.RoleResponse;
 import com.moonstack.dtos.response.UserResponse;
 import com.moonstack.entity.*;
-
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,6 +23,20 @@ public class EmployeeDetailMapper {
                         .lastName(user.getLastName())
                         .roles(roles)
                         .build())
+
+                .profilePhoto(
+                        FileUploadResponse.builder()
+                                .fileName(user.getProfilePhotoFileName())
+                                .fileType(user.getResumeFileType())
+                                .build()
+                )
+
+                .resume(
+                        FileUploadResponse.builder()
+                                .fileName(user.getResumeFileName())
+                                .fileType(user.getResumeFileType())
+                                .build()
+                )
 
                 .workInfo(WorkInfoMapper.workInfoIntoWorkInfoResponse(user.getWorkInfo()))
 
