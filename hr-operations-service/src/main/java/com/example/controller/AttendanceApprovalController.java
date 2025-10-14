@@ -10,13 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/attendanceApproval")
+@RequestMapping("/attendance-approval")
 public class AttendanceApprovalController {
 
     @Autowired
     private AttendanceApprovalService attendanceApprovalService;
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<ApiResponse<String>> createAttendanceApprovalRequest(@RequestBody AttendanceApprovalRequest attendanceApprovalRequest){
         attendanceApprovalService.createRequest(attendanceApprovalRequest);
         ApiResponse<String> response = ApiResponse.<String>builder()

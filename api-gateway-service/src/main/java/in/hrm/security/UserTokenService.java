@@ -18,7 +18,7 @@ public class UserTokenService {
 
     public Mono<UserTokenResponse> getUserTokenResponse(String userId,String sessionId) {
         return webClient.get()
-                .uri("/user/usertokenresponse/{userId}/{sessionId}", userId,sessionId)
+                .uri("/user/token-response/{userId}/{sessionId}", userId,sessionId)
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<ApiResponse<UserTokenResponse>>() {})
                 .map(ApiResponse::getData)

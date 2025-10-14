@@ -19,7 +19,7 @@ public class MessageController
     @Autowired
     private MessageService messageService;
 
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<ApiResponse<List<MessageResponse>>> register(@RequestBody List<MessageRequest> requests)
     {
         ApiResponse<List<MessageResponse>> response = ApiResponse.<List<MessageResponse>>builder()

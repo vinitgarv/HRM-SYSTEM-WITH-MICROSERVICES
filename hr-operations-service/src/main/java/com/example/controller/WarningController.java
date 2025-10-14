@@ -22,7 +22,7 @@ public class WarningController
     @Autowired
     private WarningService warningService;
 
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<ApiResponse<WarningResponse>> add(@RequestBody WarningRequest request) {
         ApiResponse<WarningResponse> response = ApiResponse.<WarningResponse>builder()
                 .statusCode(HttpStatus.OK.value())
@@ -33,7 +33,7 @@ public class WarningController
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @GetMapping("/getById/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<WarningResponse>> add(@PathVariable("id") String id) {
         ApiResponse<WarningResponse> response = ApiResponse.<WarningResponse>builder()
                 .statusCode(HttpStatus.OK.value())
@@ -44,7 +44,7 @@ public class WarningController
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @GetMapping("/getAll")
+    @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<WarningResponse>>> getAll(@RequestParam(defaultValue = "0") Integer page,
                                                                              @RequestParam(defaultValue = "10") Integer size) {
         ApiResponse<PageResponse<WarningResponse>> response = ApiResponse.<PageResponse<WarningResponse>>builder()
@@ -56,7 +56,7 @@ public class WarningController
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ApiResponse<WarningResponse> update(@PathVariable("id") String id, @RequestBody WarningRequest request) {
         ApiResponse<WarningResponse> response = ApiResponse.<WarningResponse>builder()
                 .statusCode(HttpStatus.OK.value())
@@ -67,7 +67,7 @@ public class WarningController
         return response;
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ApiResponse<String> delete(@PathVariable("id") String id) {
         ApiResponse<String> response = ApiResponse.<String>builder()
                 .statusCode(HttpStatus.OK.value())

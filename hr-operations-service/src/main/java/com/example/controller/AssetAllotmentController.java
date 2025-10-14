@@ -19,7 +19,7 @@ public class AssetAllotmentController
     @Autowired
     private AssetAllotmentService assetAllotmentService;
 
-    @PostMapping("/allot/{assetId}/{userId}")
+    @PostMapping("/{assetId}/{userId}")
     public ResponseEntity<ApiResponse<AssetAllotmentResponse>> allot(@PathVariable("assetId") String assetId,
                                                                    @PathVariable("userId") String userId)
     {
@@ -32,7 +32,7 @@ public class AssetAllotmentController
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @PutMapping("/update/{allotId}/{assetId}/{userId}")
+    @PutMapping("/{allotId}/{assetId}/{userId}")
     public ResponseEntity<ApiResponse<AssetAllotmentResponse>> update(@PathVariable("allotId") String allotId,
                                                                    @PathVariable("assetId") String assetId,
                                                                    @PathVariable("userId") String userId)
@@ -58,7 +58,7 @@ public class AssetAllotmentController
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<ApiResponse<List<AssetAllotmentResponse>>> getAll() {
         ApiResponse<List<AssetAllotmentResponse>> response = ApiResponse.<List<AssetAllotmentResponse>>builder()
                 .statusCode(HttpStatus.OK.value())

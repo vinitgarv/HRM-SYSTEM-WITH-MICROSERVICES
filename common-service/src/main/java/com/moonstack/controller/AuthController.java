@@ -1,10 +1,7 @@
 package com.moonstack.controller;
 
 import com.moonstack.constants.Message;
-import com.moonstack.dtos.request.AuthRequest;
-import com.moonstack.dtos.request.ChangePasswordRequest;
-import com.moonstack.dtos.request.RefreshTokenRequest;
-import com.moonstack.dtos.request.RegisterRequest;
+import com.moonstack.dtos.request.*;
 import com.moonstack.dtos.response.AuthResponse;
 import com.moonstack.response.ApiResponse;
 import com.moonstack.service.AuthService;
@@ -52,7 +49,7 @@ public class AuthController {
                 .build());
     }
 
-    @PostMapping("/changePassword/{userId}")
+    @PostMapping("/change-password/{userId}")
     public ResponseEntity<ApiResponse<String>> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest, @PathVariable String  userId) {
         String response = authService.changePassword(changePasswordRequest,userId);
         return ResponseEntity.ok(ApiResponse.<String>builder()
@@ -87,5 +84,25 @@ public class AuthController {
                 .build());
     }
 
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ApiResponse<String>> forgotPassword( @RequestBody ForgotPasswordRequest request) {
+        String response = authService.forgotPassword(request);
+        return ResponseEntity.ok(ApiResponse.<String>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message(Message.SUCCESS)
+                .multiple(false)
+                .data(response)
+                .build());
+    }
 
+    @PostMapping("/reset-password/{userId}")
+    public ResponseEntity<ApiResponse<String>> resetPassword(@PathVariable String  userId, @RequestBody ResetPasswordRequest request) {
+        String response = authService.resetPassword(userId,request);
+        return ResponseEntity.ok(ApiResponse.<String>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message(Message.SUCCESS)
+                .multiple(false)
+                .data(response)
+                .build());
+    }
 }

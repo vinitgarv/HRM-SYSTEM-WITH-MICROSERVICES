@@ -20,7 +20,7 @@ public class AttendanceLogsController {
     @Autowired
     private AttendanceLogsService attendanceLogsService;
 
-    @PostMapping("/punchIn/{userId}")
+    @PostMapping("/punch-in/{userId}")
     public ResponseEntity<ApiResponse<String>> punchIn(@PathVariable String userId) {
         ApiResponse<String> response = ApiResponse.<String>builder()
                 .statusCode(HttpStatus.OK.value())
@@ -31,7 +31,7 @@ public class AttendanceLogsController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @GetMapping("/getAll")
+    @GetMapping
     public ResponseEntity<ApiResponse<List<AttendanceRecord>>> getAllUser()
     {
         ApiResponse<List<AttendanceRecord>> response = ApiResponse.<List<AttendanceRecord>>builder()
@@ -43,7 +43,7 @@ public class AttendanceLogsController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @PostMapping("/addAllUserAttendance")
+    @PostMapping("/add-user-attendance")
     public ResponseEntity<ApiResponse<List<AttendanceLogsResponse>>> addAllUserAttendance()
     {
         ApiResponse<List<AttendanceLogsResponse>> response = ApiResponse.<List<AttendanceLogsResponse>>builder()
@@ -55,7 +55,7 @@ public class AttendanceLogsController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @GetMapping("/getAllAttendanceOfaUser/{date}/{userId}")
+    @GetMapping("/{date}/{userId}")
     public ResponseEntity<ApiResponse<List<AttendanceLogsResponse>>> getAllAttendanceOfaUser(@PathVariable("date") LocalDate date,@PathVariable("userId") String userId)
     {
         ApiResponse<List<AttendanceLogsResponse>> response = ApiResponse.<List<AttendanceLogsResponse>>builder()
@@ -67,7 +67,7 @@ public class AttendanceLogsController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @GetMapping("/monthlyUserAttendance/{userId}/{month}/{year}")
+    @GetMapping("/{userId}/{month}/{year}")
     public ResponseEntity<ApiResponse<List<AttendanceLogsResponse>>> getMonthlyUserAttendance(@PathVariable("userId") String userId,@PathVariable("month") Integer month,@PathVariable("year") Integer year)
     {
         ApiResponse<List<AttendanceLogsResponse>> response = ApiResponse.<List<AttendanceLogsResponse>>builder()
@@ -79,7 +79,7 @@ public class AttendanceLogsController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @GetMapping("/userAttendanceWithData/{userId}/{month}/{year}")
+    @GetMapping("/info/{userId}/{month}/{year}")
     public ResponseEntity<ApiResponse<AttendanceDataResponse>> userAttendanceWithData(@PathVariable("userId") String userId, @PathVariable("month") Integer month, @PathVariable("year") Integer year)
     {
         ApiResponse<AttendanceDataResponse> response = ApiResponse.<AttendanceDataResponse>builder()
