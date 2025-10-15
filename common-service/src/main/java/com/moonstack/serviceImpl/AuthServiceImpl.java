@@ -96,7 +96,7 @@ public class AuthServiceImpl implements AuthService
             }
         }
 
-        String changePasswordLink = "http://localhost:5173/changepassword/"+user.getId()+"?tempPassword=" + user.getTempPassword();
+        String changePasswordLink = "http://localhost:3000/changepassword/"+user.getId()+"?tempPassword=" + user.getTempPassword();
 
         String emailBody =replacePlaceHoldersForChangePassword(user, changePasswordLink);
 
@@ -381,7 +381,7 @@ public class AuthServiceImpl implements AuthService
     {
         User user = userService.findByEmail(request.getEmail());
 
-        String forgotPasswordLink = "http://localhost:5173/resetPassword/"+user.getId();
+        String forgotPasswordLink = "http://localhost:3000/resetPassword/"+user.getId();
 
         String emailBody =replacePlaceHoldersForForgotPassword(user, forgotPasswordLink);
 
