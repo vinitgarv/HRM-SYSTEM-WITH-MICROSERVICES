@@ -3,6 +3,7 @@ package com.moonstack.serviceImpl;
 import com.moonstack.constants.Message;
 import com.moonstack.dtos.request.*;
 import com.moonstack.dtos.response.AuthResponse;
+import com.moonstack.dtos.response.UserInfo;
 import com.moonstack.entity.*;
 import com.moonstack.exception.*;
 import com.moonstack.repository.DeviceDataRepository;
@@ -209,9 +210,17 @@ public class AuthServiceImpl implements AuthService
             user.getDeviceData().add(deviceData);
             userRepository.save(user);
 
+
+            UserInfo userInfo = UserInfo.builder()
+                    .userId(user.getId())
+                    .name(user.getFirstName()+" "+user.getLastName())
+                    .email(user.getEmail())
+                    .build();
+
             return AuthResponse.builder()
                     .token(accessToken)
                     .refreshToken(refreshTokenValue)
+                    .userInfo(userInfo)
                     .build();
 
         }
