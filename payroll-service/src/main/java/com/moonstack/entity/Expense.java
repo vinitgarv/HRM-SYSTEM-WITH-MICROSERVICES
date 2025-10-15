@@ -33,9 +33,9 @@ public class Expense extends AbstractPersistable
     private LocalDate purchaseDate;
     private int purchaseAmount;
 
-    private PurchaseStatus purchaseStatus;
+    private String purchaseStatus;
 
-    private RequestStatus status;
+    private String status;
 
     private String approvedBy;
     private LocalDate approvedDate;

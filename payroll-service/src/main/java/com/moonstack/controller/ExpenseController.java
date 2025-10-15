@@ -26,7 +26,7 @@ public class ExpenseController
     @Autowired
     private ExpenseService expensesService;
 
-    @PostMapping(value = "/createExpenseRequest", consumes = {"multipart/form-data"})
+    @PostMapping(value = "/create-expense-request", consumes = {"multipart/form-data"})
     public ResponseEntity<ApiResponse<String>> createExpenseRequest(
             @RequestPart("data") ExpenseRequest expensesRequest,
             @RequestPart(value = "file", required = true) MultipartFile file) throws IOException {
@@ -65,7 +65,7 @@ public class ExpenseController
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @GetMapping("/findExpenseRequestById/{expenseRequestId}")
+    @GetMapping("/find-expense-request/{expenseRequestId}")
     public ResponseEntity<ApiResponse<ExpenseResponse>> getLeaveById(@PathVariable String expenseRequestId) {
         ApiResponse<ExpenseResponse> response = ApiResponse.<ExpenseResponse>builder()
                 .statusCode(HttpStatus.OK.value())
@@ -76,7 +76,7 @@ public class ExpenseController
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @GetMapping("/getAllExpenses")
+    @GetMapping
     public ResponseEntity<ApiResponse<AllExpensesResponse>> getAllExpensesRequest() {
         ApiResponse<AllExpensesResponse> response = ApiResponse.<AllExpensesResponse>builder()
                 .statusCode(HttpStatus.OK.value())
@@ -87,7 +87,7 @@ public class ExpenseController
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @DeleteMapping("/deleteByID/{expenseRequestId}")
+    @DeleteMapping("/{expenseRequestId}")
     public ResponseEntity<ApiResponse<String>> deleteExpenseRequest(@PathVariable String expenseRequestId) {
         ApiResponse<String> response = ApiResponse.<String>builder()
                 .statusCode(HttpStatus.OK.value())
@@ -98,7 +98,7 @@ public class ExpenseController
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @PutMapping("/updateById/{expenseRequestId}")
+    @PutMapping("/{expenseRequestId}")
     public ResponseEntity<ApiResponse<ExpenseResponse>> updateExpenseRequest(@PathVariable String expenseRequestId, @RequestBody ExpenseRequest updateRequest) {
         ApiResponse<ExpenseResponse> response = ApiResponse.<ExpenseResponse>builder()
                 .statusCode(HttpStatus.OK.value())
@@ -109,7 +109,7 @@ public class ExpenseController
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @GetMapping("/getAllExpensesByUser/{userId}")
+    @GetMapping("/user-expenses/{userId}")
     public ResponseEntity<ApiResponse<AllExpensesResponse>> getAllExpensesRequestByUser(@PathVariable String userId) {
         ApiResponse<AllExpensesResponse> response = ApiResponse.<AllExpensesResponse>builder()
                 .statusCode(HttpStatus.OK.value())
@@ -120,8 +120,8 @@ public class ExpenseController
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @GetMapping("/getExpenses/filter")
-    public ResponseEntity<ApiResponse<AllExpensesResponse>> filterExpenses(@RequestParam(required = false) PurchaseStatus purchaseStatus){
+    @GetMapping("/filter")
+    public ResponseEntity<ApiResponse<AllExpensesResponse>> filterExpenses(@RequestParam(required = false) String purchaseStatus){
         ApiResponse<AllExpensesResponse>response = ApiResponse.<AllExpensesResponse>builder()
                 .statusCode(HttpStatus.OK.value())
                 .message(Message.SUCCESS)
@@ -145,7 +145,7 @@ public class ExpenseController
         }
     }
 
-    @GetMapping("/getInvoice/{expenseId}")
+    @GetMapping("/get-invoice/{expenseId}")
     public ResponseEntity<Resource> previewInvoice(@PathVariable String expenseId) {
         try {
             FileResource fileResource = expensesService.getInvoiceByExpenseId(expenseId);

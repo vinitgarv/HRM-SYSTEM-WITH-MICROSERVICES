@@ -16,10 +16,13 @@ import com.moonstack.mapper.ExpenseMapper;
 import com.moonstack.repository.ExpenseRepository;
 import com.moonstack.service.ExpenseService;
 import com.moonstack.util.ExpenseSpecification;
+import com.moonstack.util.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,7 +44,13 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Autowired
     private UserClient userClient;
 
-    private static final String FILE_DIR = "E:\\SpringbootSecurityJwt5(Role Based)\\uploads";
+    @Autowired
+    private HttpServletRequest servletRequest;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    private static final String FILE_DIR = "E:\\Aditya Task\\HRM-SYSTEM-WITH-MICROSERVICES\\uploads";
 
     @Override
     public String createExpenseRequest(ExpenseRequest expensesRequest, MultipartFile file) throws IOException
@@ -50,7 +59,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         UserResponse user = apiResponse.getData();
 
         Expense expense = ExpenseMapper.createExpenseRequestToExpenses(expensesRequest);
-        expense.setPurchasedBy(user.getFirstName());
+        expense.setPurchasedBy(user.getFirstName()+" "+user.getLastName());
         expense.setUser(user.getId());
         if (file != null && !file.isEmpty()) {
             String uploadDir = new File("uploads").getAbsolutePath();
@@ -75,24 +84,38 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public Expense approveExpenseRequest(String expenseRequestId) {
+    public Expense approveExpenseRequest(String expenseRequestId)
+    {
+        String token  = jwtUtil.extractToken(servletRequest);
+        String userId = jwtUtil.extractUserId(token);
+
+        ApiResponse<UserResponse> apiResponse = userClient.getByUserId(userId);
+        UserResponse user = apiResponse.getData();
+
         Expense expense = repository.findById(expenseRequestId)
                 .orElseThrow(() -> new RuntimeException("Expense Request Not Found"));
 
-        expense.setStatus(RequestStatus.APPROVED);
-        expense.setApprovedBy("Admin");
+        expense.setStatus(RequestStatus.APPROVED.getRequestStatus());
+        expense.setApprovedBy(user.getFirstName()+" "+user.getLastName());
         expense.setApprovedDate(LocalDate.now());
         repository.save(expense);
         return expense;
     }
 
     @Override
-    public Expense rejectExpenseRequest(String expenseRequestId) {
+    public Expense rejectExpenseRequest(String expenseRequestId)
+    {
         Expense expenses = repository.findById(expenseRequestId)
                 .orElseThrow(() -> new RuntimeException("Expense Request Not Found"));
 
-        expenses.setStatus(RequestStatus.REJECTED);
-        expenses.setApprovedBy(null);
+        String token  = jwtUtil.extractToken(servletRequest);
+        String userId = jwtUtil.extractUserId(token);
+
+        ApiResponse<UserResponse> apiResponse = userClient.getByUserId(userId);
+        UserResponse user = apiResponse.getData();
+
+        expenses.setStatus(RequestStatus.REJECTED.getRequestStatus());
+        expenses.setApprovedBy(user.getFirstName()+" "+user.getLastName());
         expenses.setApprovedDate(LocalDate.now());
         repository.save(expenses);
         return expenses;
@@ -103,6 +126,8 @@ public class ExpenseServiceImpl implements ExpenseService {
         Expense expenses = repository.findById(expenseRequestId)
                 .orElseThrow(() -> new RuntimeException("Expense Request Not Found"));
 
+        PurchaseStatus purchaseStatus = PurchaseStatus.fromString(expenses.getPurchaseStatus());
+
         return ExpenseResponse.builder()
                 .id(expenses.getId())
                 .invoiceNumber(expenses.getInvoiceNumber())
@@ -110,11 +135,12 @@ public class ExpenseServiceImpl implements ExpenseService {
                 .purchasedBy(expenses.getPurchasedBy())
                 .purchaseDate(expenses.getPurchaseDate())
                 .purchaseAmount(expenses.getPurchaseAmount())
-                .purchaseStatus(expenses.getPurchaseStatus())
+                .purchaseStatus(purchaseStatus.getPurchaseStatus())
                 .approvedBy(expenses.getApprovedBy())
                 .approvedDate(expenses.getApprovedDate())
                 .invoiceFileName(expenses.getInvoiceFileName())
                 .fileType(expenses.getFileType())
+                .status(expenses.getStatus())
                 .build();
     }
 
@@ -138,23 +164,24 @@ public class ExpenseServiceImpl implements ExpenseService {
                 .approvedBy(expense.getApprovedBy())
                 .invoiceFileName(expense.getInvoiceFileName())
                 .fileType(expense.getFileType())
+                .status(expense.getStatus())
                 .build()).toList();
 
         int totalExpense = expenseResponses.stream()
                 .mapToInt(ExpenseResponse::getPurchaseAmount).sum();
 
         int totalPaid = expenseResponses.stream()
-                .filter(e -> e.getPurchaseStatus() == PurchaseStatus.PAID)
+                .filter(e -> e.getPurchaseStatus().equals(PurchaseStatus.PAID.getPurchaseStatus()))
                 .mapToInt(ExpenseResponse::getPurchaseAmount)
                 .sum();
 
         int totalUnpaid = expenseResponses.stream()
-                .filter(e -> e.getPurchaseStatus() == PurchaseStatus.UNPAID)
+                .filter(e -> e.getPurchaseStatus().equals(PurchaseStatus.UNPAID.getPurchaseStatus()))
                 .mapToInt(ExpenseResponse::getPurchaseAmount)
                 .sum();
 
         int totalReturned = expenseResponses.stream()
-                .filter(e -> e.getPurchaseStatus() == PurchaseStatus.RETURNED)
+                .filter(e -> e.getPurchaseStatus().equals(PurchaseStatus.RETURNED.getPurchaseStatus()))
                 .mapToInt(ExpenseResponse::getPurchaseAmount)
                 .sum();
 
@@ -191,7 +218,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         expense.setPurchaseAmount(updateRequest.getPurchaseAmount());
         expense.setPurchaseStatus(updateRequest.getPurchaseStatus());
         expense.setUser(user.getId());
-        expense.setStatus(RequestStatus.PENDING);
+        expense.setStatus(RequestStatus.PENDING.getRequestStatus());
         expense.setApprovedBy(null);
         expense.setApprovedDate(null);
         Expense updated = repository.save(expense);
@@ -231,6 +258,9 @@ public class ExpenseServiceImpl implements ExpenseService {
                         .purchaseStatus(expense.getPurchaseStatus())
                         .approvedDate(expense.getApprovedDate())
                         .approvedBy(expense.getApprovedBy())
+                        .invoiceFileName(expense.getInvoiceFileName())
+                        .fileType(expense.getFileType())
+                        .status(expense.getStatus())
                         .build())
                 .toList();
 
@@ -240,15 +270,15 @@ public class ExpenseServiceImpl implements ExpenseService {
 
         int totalExpense = userExpenses.stream().mapToInt(ExpenseResponse::getPurchaseAmount).sum();
         int totalPaid = userExpenses.stream()
-                .filter(e -> e.getPurchaseStatus() == PurchaseStatus.PAID)
+                .filter(e -> e.getPurchaseStatus().equals(PurchaseStatus.PAID.getPurchaseStatus()))
                 .mapToInt(ExpenseResponse::getPurchaseAmount)
                 .sum();
         int totalUnpaid = userExpenses.stream()
-                .filter(e -> e.getPurchaseStatus() == PurchaseStatus.UNPAID)
+                .filter(e -> e.getPurchaseStatus().equals(PurchaseStatus.UNPAID.getPurchaseStatus()))
                 .mapToInt(ExpenseResponse::getPurchaseAmount)
                 .sum();
         int totalReturned = userExpenses.stream()
-                .filter(e -> e.getPurchaseStatus() == PurchaseStatus.RETURNED)
+                .filter(e -> e.getPurchaseStatus().equals(PurchaseStatus.RETURNED.getPurchaseStatus()))
                 .mapToInt(ExpenseResponse::getPurchaseAmount)
                 .sum();
 
@@ -262,7 +292,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public AllExpensesResponse filterExpensesByPurchaseStatus(PurchaseStatus purchaseStatus) {
+    public AllExpensesResponse filterExpensesByPurchaseStatus(String purchaseStatus) {
         Specification<Expense> spec = Specification.where(ExpenseSpecification.hasStatus(purchaseStatus));
 
         List<ExpenseResponse> expenseResponses =  repository.findAll(spec).stream()
@@ -277,21 +307,23 @@ public class ExpenseServiceImpl implements ExpenseService {
                         .approvedDate(expense.getApprovedDate())
                         .approvedBy(expense.getApprovedBy())
                         .invoiceFileName(expense.getInvoiceFileName())
+                        .fileType(expense.getFileType())
+                        .status(expense.getStatus())
                         .build()).toList();
 
         int totalExpense = expenseResponses.stream()
                 .mapToInt(ExpenseResponse::getPurchaseAmount).sum();
 
         int totalPaid = expenseResponses.stream()
-                .filter(e -> e.getPurchaseStatus() == PurchaseStatus.PAID)
+                .filter(e -> e.getPurchaseStatus().equals(PurchaseStatus.PAID.getPurchaseStatus()))
                 .mapToInt(ExpenseResponse::getPurchaseAmount)
                 .sum();
         int totalUnpaid = expenseResponses.stream()
-                .filter(e -> e.getPurchaseStatus() == PurchaseStatus.UNPAID)
+                .filter(e -> e.getPurchaseStatus().equals(PurchaseStatus.UNPAID.getPurchaseStatus()))
                 .mapToInt(ExpenseResponse::getPurchaseAmount)
                 .sum();
         int totalReturned = expenseResponses.stream()
-                .filter(e -> e.getPurchaseStatus() == PurchaseStatus.RETURNED)
+                .filter(e -> e.getPurchaseStatus().equals(PurchaseStatus.RETURNED))
                 .mapToInt(ExpenseResponse::getPurchaseAmount)
                 .sum();
 

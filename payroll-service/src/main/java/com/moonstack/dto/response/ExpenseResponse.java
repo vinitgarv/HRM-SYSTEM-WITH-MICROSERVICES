@@ -17,9 +17,10 @@ public class ExpenseResponse {
     private String purchasedBy;
     private LocalDate purchaseDate;
     private int purchaseAmount;
-    private PurchaseStatus purchaseStatus;
+    private String purchaseStatus;
     private String approvedBy;
     private LocalDate approvedDate;
     private String invoiceFileName;
     private String fileType;
+    private String status;
 }

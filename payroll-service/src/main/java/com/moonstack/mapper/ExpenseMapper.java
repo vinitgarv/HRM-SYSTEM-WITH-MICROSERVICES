@@ -2,6 +2,7 @@ package com.moonstack.mapper;
 
 import com.moonstack.dto.request.ExpenseRequest;
 import com.moonstack.entity.Expense;
+import com.moonstack.enums.PurchaseStatus;
 import com.moonstack.enums.RequestStatus;
 import com.moonstack.util.UtilsMethods;
 
@@ -9,6 +10,8 @@ public class ExpenseMapper
 {
     public static Expense createExpenseRequestToExpenses(ExpenseRequest expenseRequest)
     {
+        PurchaseStatus purchaseStatus = PurchaseStatus.fromString(expenseRequest.getPurchaseStatus());
+
         return Expense.builder()
                 .id(UtilsMethods.generateId())
                 .isActive(true)
@@ -17,8 +20,8 @@ public class ExpenseMapper
                 .itemName(expenseRequest.getItemName())
                 .purchaseDate(expenseRequest.getPurchaseDate())
                 .purchaseAmount(expenseRequest.getPurchaseAmount())
-                .purchaseStatus(expenseRequest.getPurchaseStatus())
-                .status(RequestStatus.PENDING)
+                .purchaseStatus(purchaseStatus.getPurchaseStatus())
+                .status(RequestStatus.PENDING.getRequestStatus())
                 .build();
     }
 }

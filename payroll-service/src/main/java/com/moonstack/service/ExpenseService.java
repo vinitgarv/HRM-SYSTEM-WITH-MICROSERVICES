@@ -28,7 +28,7 @@ public interface ExpenseService
 
     AllExpensesResponse allExpenseRequestByUser(String userId);
 
-    AllExpensesResponse filterExpensesByPurchaseStatus(PurchaseStatus purchaseStatus);
+    AllExpensesResponse filterExpensesByPurchaseStatus(String purchaseStatus);
 
     FileResource getInvoiceByFileName(String fileName) throws Exception;
 

@@ -52,7 +52,8 @@ public class SecurityConfig {
                         .pathMatchers("/common/user/log-in-users/**",
                                 "/common/user/total-log-in-users/**",
                                 "/common/user/logout/**",
-                                "/hrops/employee-leave/**")
+                                "/hrops/employee-leave/**",
+                                "/payroll/expense/**")
                         .hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_SUPER_ADMIN")
 
                         .pathMatchers("/common/auth/logout",
