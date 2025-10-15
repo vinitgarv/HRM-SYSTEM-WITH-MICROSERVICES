@@ -9,7 +9,7 @@ spring:
         git:
           uri: https://github.com/opensourcerepo/config
           clone-on-start: true
-          default-label: hrm-micro-attendance
+          default-label: hrm-micro-payroll
 eureka:
   client:
     service-url:

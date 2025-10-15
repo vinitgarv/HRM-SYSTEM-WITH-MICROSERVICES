@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="common-service (1)" />
         <module name="common-service" />
+        <module name="payroll-service" />
         <module name="api-gateway-service" />
         <module name="SpringbootSecurityJwt4DB" />
         <module name="hr-operations-service" />
@@ -29,6 +30,7 @@
       <module name="common-service (1)" options="-parameters" />
       <module name="config-server-service" options="-parameters" />
       <module name="hr-operations-service" options="-parameters" />
+      <module name="payroll-service" options="-parameters" />
       <module name="service-discovery" options="-parameters" />
       <module name="user-service" options="-parameters" />
     </option>

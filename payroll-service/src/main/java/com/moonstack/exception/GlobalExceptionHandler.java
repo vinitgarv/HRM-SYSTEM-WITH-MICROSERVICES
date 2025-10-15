@@ -1,7 +1,7 @@
 package com.moonstack.exception;
 
-import com.example.apiResponse.ApiResponse;
-import com.example.constants.Message;
+import com.moonstack.apiResponse.ApiResponse;
+import com.moonstack.constant.Message;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;

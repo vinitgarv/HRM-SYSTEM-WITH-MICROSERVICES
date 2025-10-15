@@ -1,8 +1,7 @@
 package com.moonstack.exception;
 
 
-import com.example.constants.Message;
-
+import com.moonstack.constant.Message;
 public class RequestFailedException extends RuntimeException
 {
     public RequestFailedException(String msg)
