@@ -7,7 +7,9 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="common-service (1)" />
         <module name="common-service" />
+        <module name="payroll-service" />
         <module name="api-gateway-service" />
         <module name="config-server-service" />
         <module name="SpringbootSecurityJwt4DB" />
@@ -25,8 +27,10 @@
       <module name="SpringbootSecurityJwt4DB" options="-parameters" />
       <module name="api-gateway-service" options="-parameters" />
       <module name="common-service" options="-parameters" />
+      <module name="common-service (1)" options="-parameters" />
       <module name="config-server-service" options="-parameters" />
       <module name="hr-operations-service" options="-parameters" />
+      <module name="payroll-service" options="-parameters" />
       <module name="service-discovery" options="-parameters" />
       <module name="user-service" options="-parameters" />
     </option>

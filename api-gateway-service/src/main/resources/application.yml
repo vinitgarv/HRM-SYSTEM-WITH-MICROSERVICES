@@ -25,6 +25,13 @@ spring:
             - Path=/common/**
           filters:
             - StripPrefix=1
+        - id: payroll-service
+          uri: lb://payroll-SERVICE
+          predicates:
+            - Path=/payroll/**
+          filters:
+            - StripPrefix=1
+
     config:
       discovery:
         enabled: true
