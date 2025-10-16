@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class IdentityInfoRequest
-{
-    private String uan;
-    private String pan;
-    private String aadhar;
+public class IdentityInfoRequest {
+    private String documentType;
+    private String documentNumber;
+    private String fileName;
+    private String fileType;
+
 }

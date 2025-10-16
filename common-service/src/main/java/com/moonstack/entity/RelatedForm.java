@@ -16,6 +16,8 @@ import org.hibernate.annotations.Where;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE related_form SET IS_DELETED = true WHERE id = ?")
+@Where(clause = "IS_DELETED = false")
 public class RelatedForm extends AbstractPersistable {
 
     private String type;

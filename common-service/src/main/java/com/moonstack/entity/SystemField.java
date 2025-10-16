@@ -19,6 +19,8 @@ import java.time.LocalDate;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE system_field SET IS_DELETED = true WHERE id = ?")
+@Where(clause = "IS_DELETED = false")
 public class SystemField extends AbstractPersistable{
 
     private String addedBy;

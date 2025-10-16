@@ -1,7 +1,9 @@
 package com.moonstack.utils;
 
 
+import com.moonstack.entity.DeviceData;
 import com.moonstack.entity.User;
+import com.moonstack.entity.UserSessionData;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -96,14 +98,16 @@ public class JwtUtil {
     private static final String secretKey = "aditya11110009999====dmvknfwvjfvnjksfnvjksdfvdnajfndjkfnj76546546";
 
     // Generate JWT token with HS512 algorithm
-    public String generateJwtToken(String username, String userId, int tokenVersion, Set<String> roles) {
+    public String generateJwtToken(String username, String userId, Set<String> roles, UserSessionData userSessionData, DeviceData deviceData) {
         return Jwts.builder()
                 .setSubject(username)
                 .claim("userId", userId)
                 .claim("roles", roles.stream()
                         .map(role -> role.replace("Role : ", "").trim()) // clean roles
                         .toList())
-                .claim("tokenVersion", tokenVersion)
+                .claim("sessionId",userSessionData.getId())
+                .claim("deviceId",deviceData.getDeviceId())
+                .claim("deviceName",deviceData.getDeviceName())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour
                 .signWith(getKey(), SignatureAlgorithm.HS512)
@@ -136,6 +140,16 @@ public class JwtUtil {
         return extractClaim(token, claims -> claims.get("userId", String.class));
     }
 
+    public String extractSessionId(String token)
+    {
+        return extractClaim(token, claims -> claims.get("sessionId", String.class));
+    }
+
+    public String extractDeviceId(String token)
+    {
+        return extractClaim(token, claims -> claims.get("deviceId", String.class));
+    }
+
     public int extractTokenVersion(String token) {
         return extractClaim(token, claims -> claims.get("tokenVersion", Integer.class));
     }
@@ -149,9 +163,16 @@ public class JwtUtil {
     }
 
     public boolean validateToken(String token, User user) {
-        return extractUsername(token).equals(user.getEmail()) &&
+        String username = extractUsername(token);
+        String sessionId = extractSessionId(token);
+
+        // Get all active sessions from DB for this user
+        boolean sessionMatch = user.getUserSessionData().stream()
+                .anyMatch(s -> s.getId().equals(sessionId) && s.getIsActive());
+
+        return username.equals(user.getEmail()) &&
                 !isTokenExpired(token) &&
-                extractTokenVersion(token) == user.getTokenVersion();
+                sessionMatch;
     }
 
     public String extractToken(HttpServletRequest request) {

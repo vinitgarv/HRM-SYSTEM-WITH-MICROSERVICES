@@ -1,7 +1,9 @@
 package com.moonstack.mapper;
 
+import com.moonstack.dtos.request.EducationDetailRequest;
 import com.moonstack.dtos.request.HierarchyInfoRequest;
 import com.moonstack.dtos.response.HierarchyInfoResponse;
+import com.moonstack.entity.EducationDetail;
 import com.moonstack.entity.HierarchyInfo;
 import com.moonstack.utils.Helper;
 

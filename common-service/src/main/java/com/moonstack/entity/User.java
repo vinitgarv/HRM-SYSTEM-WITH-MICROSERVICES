@@ -29,44 +29,56 @@ public class User extends AbstractPersistable
     private String email;
     private String tempPassword;
     private String password;
-    private int tokenVersion = 0;
+    private String resumeFileName;
+    private String resumeFileType;
+    private String profilePhotoFileName;
+    private String profilePhotoFileType;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private Set<Role> roles = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<SessionLogs> sessionLogs;
 
-    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private ContactDetail contactDetail;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<DependentDetail> dependentDetails;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<EducationDetail> educationDetails;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<HierarchyInfo> hierarchyInfos;
 
-    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    private IdentityInfo identityInfo;
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<IdentityInfo> identityInfo;
 
-    @OneToOne( mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToOne( mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private PersonalDetail personalDetail;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<RelatedForm> relatedForms;
 
-    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private SystemField systemField;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<WorkExperience> workExperiences;
 
-    @OneToOne( mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToOne( mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private WorkInfo workInfo;
 
+//    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+//    private List<RefreshToken> refreshTokens;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private List<UserSessionData> userSessionData;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<DeviceData> deviceData;
 
     public void addRole(Role role) {
         roles.add(role);
@@ -76,5 +88,4 @@ public class User extends AbstractPersistable
         roles.remove(role);
         role.setUser(null);
     }
-
 }

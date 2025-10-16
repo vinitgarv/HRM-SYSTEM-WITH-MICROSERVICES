@@ -54,6 +54,28 @@ public class GlobalExceptionHandler
         return new ResponseEntity<>(response,HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ApiResponse<Object>> handleUnauthorizedException(UnauthorizedException e) {
+        ApiResponse<Object> response = ApiResponse.builder()
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .message("Access Token has expired")
+                .multiple(Message.FALSE)
+                .data(e.getMessage())
+                .build();
+        return new ResponseEntity<>(response,HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ApiResponse<Object>> handleForbiddenException(ForbiddenException e) {
+        ApiResponse<Object> response = ApiResponse.builder()
+                .statusCode(HttpStatus.FORBIDDEN.value())
+                .message(e.getData())
+                .multiple(Message.FALSE)
+                .data(e.getMessage())
+                .build();
+        return new ResponseEntity<>(response,HttpStatus.FORBIDDEN);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Object>> handleException(Exception e)
     {

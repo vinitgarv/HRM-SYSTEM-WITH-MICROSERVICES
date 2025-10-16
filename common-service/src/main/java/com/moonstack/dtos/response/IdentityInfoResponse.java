@@ -11,7 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class IdentityInfoResponse
 {
-    private String uan;
-    private String pan;
-    private String aadhar;
+    private String id;
+    private String documentType;
+    private String documentNumber;
+    private String status;
+    private String fileName;
+    private String fileType;
+    private String remark;
 }

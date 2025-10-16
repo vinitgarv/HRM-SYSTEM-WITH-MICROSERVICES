@@ -1,15 +1,21 @@
 package in.hrm.security;
 
+import in.hrm.response.ApiResponse;
+import in.hrm.response.UserTokenResponse;
 import io.jsonwebtoken.Claims;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
@@ -49,15 +55,22 @@ import java.util.stream.Collectors;
 //}
 
 @Component
+@Slf4j
 public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
 
     private final String secret = "aditya11110009999====dmvknfwvjfvnjksfnvjksdfvdnajfndjkfnj76546546";
+
+    @Autowired
+    private UserTokenService userTokenService;
+
+
 
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
         String authToken = authentication.getCredentials().toString();
 
         try {
+            // Parse JWT
             Claims claims = Jwts.parserBuilder()
                     .setSigningKey(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))
                     .build()
@@ -65,18 +78,36 @@ public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
                     .getBody();
 
             String username = claims.getSubject();
-            List<String> roles = claims.get("roles", List.class);
+            String userId = claims.get("userId", String.class);
+            String sessionId = claims.get("sessionId",String.class);
 
-            List<GrantedAuthority> authorities = roles.stream()
-                    .map(role -> role.replace("Role : ", "").trim())  // clean role
-                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role)) // standard Spring Security
-                    .collect(Collectors.toList());
+            Integer tokenVersionFromJwt = claims.get("tokenVersion", Integer.class);
 
-            return Mono.just(new UsernamePasswordAuthenticationToken(username, null, authorities));
+           // log.info("Authenticating user: {}, tokenVersion: {}", username, tokenVersionFromJwt);
 
+            // Fetch UserTokenResponse from COMMON-SERVICE
+            return userTokenService.getUserTokenResponse(userId,sessionId)
+                    .flatMap(tokenResponse -> validateTokenVersion(tokenResponse, authToken, username, claims))
+                    .switchIfEmpty(Mono.empty());
+
+        } catch (Exception e) {
+            log.error("Invalid JWT token", e);
+            return Mono.empty();
         }
-        catch (Exception e) {
-            return Mono.empty(); // invalid token triggers 401
+    }
+
+    private Mono<Authentication> validateTokenVersion(UserTokenResponse tokenResponse, String authToken,
+                                                      String username, Claims claims) {
+        if (!tokenResponse.getAccessToken().equals(authToken)) {
+            log.warn("Invalid token for user {}", username);
+            return Mono.empty();
         }
+
+        List<String> roles = claims.get("roles", List.class);
+        List<GrantedAuthority> authorities = roles.stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                .collect(Collectors.toList());
+
+        return Mono.just(new UsernamePasswordAuthenticationToken(username, null, authorities));
     }
 }

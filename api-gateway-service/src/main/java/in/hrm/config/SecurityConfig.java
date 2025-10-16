@@ -40,16 +40,35 @@ public class SecurityConfig {
                         .pathMatchers(
                                 "/common/auth/login",
                                 "/common/auth/register",
-                                "/common/auth/changePassword/**","/common/employeedetails/**","/common/user/**"
-//                                ,
-//                                "/common/user/**"
+                                "/common/auth/refresh-token",
+                                "/common/auth/change-password/**",
+                                "/common/employeedetails/**",
+                                "/common/message/**",
+                                "/common/auth/forgot-password/**",
+                                "/common/auth/reset-password/**",
+                                "/common/upload/**"
                         ).permitAll()
 
-//                        // only ADMIN can access these
-//                        .pathMatchers("/common/user/**")
-//                        .hasAuthority("ROLE_ADMIN")
-//                        // everything else must be authenticated
-//                        .anyExchange().authenticated()
+
+                        .pathMatchers("/common/user/log-in-users/**",
+                                "/common/user/total-log-in-users/**",
+                                "/common/user/logout/**",
+                                "/hrops/employee-leave/**",
+                                "/payroll/expense/**")
+                        .hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_SUPER_ADMIN")
+
+                        .pathMatchers("/common/auth/logout",
+                                "/common/user/token-response/**",
+                                "/hrops/attendance/**",
+                                "/hrops/asset/**",
+                                "/hrops/time-sheet",
+                                "/hrops/asset-allotment/**",
+                                "/hrops/attendance-approval/**",
+                                "/hrops/overtime/**",
+                                "/hrops/holiday/**")
+                        .hasAuthority("ROLE_ADMIN")
+                        // everything else must be  v
+                        .anyExchange().authenticated()
                 )
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(authenticationEntryPoint)

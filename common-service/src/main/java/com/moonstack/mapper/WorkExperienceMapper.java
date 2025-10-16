@@ -1,8 +1,10 @@
 package com.moonstack.mapper;
 
 import com.moonstack.dtos.request.WorkExperienceRequest;
+import com.moonstack.dtos.request.WorkInfoRequest;
 import com.moonstack.dtos.response.WorkExperienceResponse;
 import com.moonstack.entity.WorkExperience;
+import com.moonstack.entity.WorkInfo;
 import com.moonstack.utils.Helper;
 
 public class WorkExperienceMapper

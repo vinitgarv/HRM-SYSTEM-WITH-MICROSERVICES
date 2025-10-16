@@ -1,6 +1,5 @@
 package com.moonstack.mapper;
 
-
 import com.moonstack.dtos.request.ContactDetailRequest;
 import com.moonstack.dtos.response.ContactDetailResponse;
 import com.moonstack.entity.ContactDetail;

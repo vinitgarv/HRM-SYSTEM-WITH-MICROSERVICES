@@ -1,10 +1,7 @@
 package com.moonstack.controller;
 
 import com.moonstack.constants.Message;
-import com.moonstack.dtos.request.AuthRequest;
-import com.moonstack.dtos.request.ChangePasswordRequest;
-import com.moonstack.dtos.request.RefreshTokenRequest;
-import com.moonstack.dtos.request.RegisterRequest;
+import com.moonstack.dtos.request.*;
 import com.moonstack.dtos.response.AuthResponse;
 import com.moonstack.response.ApiResponse;
 import com.moonstack.service.AuthService;
@@ -28,6 +25,9 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtTokenUtil;
 
+    @Autowired
+    private HttpServletRequest request;
+
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AuthResponse>> login(@RequestBody AuthRequest authRequest, HttpServletRequest request) {
         ApiResponse<AuthResponse> response = ApiResponse.<AuthResponse>builder()
@@ -49,12 +49,13 @@ public class AuthController {
                 .build());
     }
 
-    @PostMapping("/changePassword/{userId}")
+    @PostMapping("/change-password/{userId}")
     public ResponseEntity<ApiResponse<String>> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest, @PathVariable String  userId) {
         String response = authService.changePassword(changePasswordRequest,userId);
         return ResponseEntity.ok(ApiResponse.<String>builder()
                 .statusCode(HttpStatus.OK.value())
                 .message(Message.SUCCESS)
+                .multiple(false)
                 .data(response)
                 .build());
     }
@@ -72,15 +73,36 @@ public class AuthController {
     }
 
     @GetMapping("/logout")
-    public ResponseEntity<ApiResponse<String>> logout(HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<String>> logout() {
         String token  = jwtTokenUtil.extractToken(request);
         String userId = jwtTokenUtil.extractUserId(token);
+        String sessionId = jwtTokenUtil.extractSessionId(token);
         return ResponseEntity.ok(ApiResponse.<String>builder()
                 .statusCode(HttpStatus.OK.value())
                 .message("success")
-                .data(authService.logout(userId,request))
+                .data(authService.logout(userId,sessionId,request))
                 .build());
     }
 
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ApiResponse<String>> forgotPassword( @RequestBody ForgotPasswordRequest request) {
+        String response = authService.forgotPassword(request);
+        return ResponseEntity.ok(ApiResponse.<String>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message(Message.SUCCESS)
+                .multiple(false)
+                .data(response)
+                .build());
+    }
 
+    @PostMapping("/reset-password/{userId}")
+    public ResponseEntity<ApiResponse<String>> resetPassword(@PathVariable String  userId, @RequestBody ResetPasswordRequest request) {
+        String response = authService.resetPassword(userId,request);
+        return ResponseEntity.ok(ApiResponse.<String>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message(Message.SUCCESS)
+                .multiple(false)
+                .data(response)
+                .build());
+    }
 }
