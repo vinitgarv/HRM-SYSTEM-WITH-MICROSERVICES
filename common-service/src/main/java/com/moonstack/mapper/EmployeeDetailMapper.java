@@ -1,10 +1,10 @@
 package com.moonstack.mapper;
 
 import com.moonstack.dtos.response.EmployeeDetailsResponse;
+import com.moonstack.dtos.response.FileUploadResponse;
 import com.moonstack.dtos.response.RoleResponse;
 import com.moonstack.dtos.response.UserResponse;
 import com.moonstack.entity.*;
-
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,11 +24,24 @@ public class EmployeeDetailMapper {
                         .roles(roles)
                         .build())
 
+                .profilePhoto(
+                        FileUploadResponse.builder()
+                                .fileName(user.getProfilePhotoFileName())
+                                .fileType(user.getResumeFileType())
+                                .build()
+                )
+
+                .resume(
+                        FileUploadResponse.builder()
+                                .fileName(user.getResumeFileName())
+                                .fileType(user.getResumeFileType())
+                                .build()
+                )
+
                 .workInfo(WorkInfoMapper.workInfoIntoWorkInfoResponse(user.getWorkInfo()))
 
                 .personalDetail(PersonalDetailMapper.personalDetailIntoPersonalDetailResponse(user.getPersonalDetail()))
 
-                .identityInfo(IdentityInfoMapper.identityInfoIntoIdentityInfoResponse(user.getIdentityInfo()))
 
                 .contactDetail(ContactDetailMapper.contactDetailIntoContactDetailResponse(user.getContactDetail()))
 
@@ -36,6 +49,10 @@ public class EmployeeDetailMapper {
 
                 .workExperience(user.getWorkExperiences().stream()
                         .map(WorkExperienceMapper::workExperienceIntoWorkExperienceResponse)
+                        .toList())
+
+                .identityInfo(user.getIdentityInfo().stream()
+                        .map(IdentityInfoMapper::identityInfoIntoIdentityInfoResponse)
                         .toList())
 
                 .educationDetails(user.getEducationDetails().stream()

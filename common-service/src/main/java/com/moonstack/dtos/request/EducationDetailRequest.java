@@ -17,6 +17,8 @@ public class EducationDetailRequest {
     private String degreeOrDiploma;
     private String specialization;
     private LocalDate completionDate;
+    private String fileName;
+    private String fileType;
 
     public void validate() {
         validateField(instituteName, 3, Message.INSTITUTE_NAME);

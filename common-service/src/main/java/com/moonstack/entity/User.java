@@ -29,6 +29,10 @@ public class User extends AbstractPersistable
     private String email;
     private String tempPassword;
     private String password;
+    private String resumeFileName;
+    private String resumeFileType;
+    private String profilePhotoFileName;
+    private String profilePhotoFileType;
 
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
@@ -49,8 +53,8 @@ public class User extends AbstractPersistable
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<HierarchyInfo> hierarchyInfos;
 
-    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
-    private IdentityInfo identityInfo;
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<IdentityInfo> identityInfo;
 
     @OneToOne( mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private PersonalDetail personalDetail;
@@ -67,8 +71,6 @@ public class User extends AbstractPersistable
     @OneToOne( mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private WorkInfo workInfo;
 
-
-
 //    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
 //    private List<RefreshToken> refreshTokens;
 
@@ -78,8 +80,6 @@ public class User extends AbstractPersistable
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<DeviceData> deviceData;
 
-
-
     public void addRole(Role role) {
         roles.add(role);
         role.setUser(this);
@@ -88,5 +88,4 @@ public class User extends AbstractPersistable
         roles.remove(role);
         role.setUser(null);
     }
-
 }

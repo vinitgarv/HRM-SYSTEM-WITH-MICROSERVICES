@@ -6,6 +6,7 @@ import com.moonstack.service.EducationDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class EducationDetailServiceImpl implements EducationDetailService {
 

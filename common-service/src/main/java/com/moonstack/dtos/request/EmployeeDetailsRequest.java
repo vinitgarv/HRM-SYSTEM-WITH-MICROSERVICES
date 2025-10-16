@@ -13,11 +13,12 @@ import java.util.List;
 @NoArgsConstructor
 public class EmployeeDetailsRequest
 {
-
+    private DocumentRequest profilePhoto;
+    private DocumentRequest resume;
     private WorkInfoRequest workInfo;
     private List<HierarchyInfoRequest> hierarchyInfos;
     private PersonalDetailRequest personalDetail;
-    private IdentityInfoRequest identityInfo;
+    private List<IdentityInfoRequest> identityInfo; 
     private ContactDetailRequest contactDetail;
     private SystemFieldRequest systemField;
     private List<WorkExperienceRequest> workExperience;
@@ -37,11 +38,6 @@ public class EmployeeDetailsRequest
             throw new RequestFailedException(Message.PERSONAL_DETAIL + Message.TAB + Message.IS + Message.TAB + Message.EMPTY);
         }
         personalDetail.validate();
-
-        if (identityInfo == null) {
-            throw new RequestFailedException(Message.IDENTITY_INFO + Message.TAB + Message.IS + Message.TAB + Message.EMPTY);
-        }
-        identityInfo.validate();
 
         if (contactDetail == null) {
             throw new RequestFailedException(Message.CONTACT_DETAIL + Message.TAB + Message.IS + Message.TAB + Message.EMPTY);

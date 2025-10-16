@@ -27,6 +27,8 @@ public class EducationDetail extends AbstractPersistable {
     private String degreeOrDiploma;
     private String specialization;
     private LocalDate completionDate;
+    private String fileName;
+    private String fileType;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

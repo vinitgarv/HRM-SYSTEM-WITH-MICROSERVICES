@@ -45,7 +45,8 @@ public class SecurityConfig {
                                 "/common/employeedetails/**",
                                 "/common/message/**",
                                 "/common/auth/forgot-password/**",
-                                "/common/auth/reset-password/**"
+                                "/common/auth/reset-password/**",
+                                "/common/upload/**"
                         ).permitAll()
 
 

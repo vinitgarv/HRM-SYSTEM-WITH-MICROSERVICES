@@ -11,9 +11,11 @@ public class IdentityInfoMapper
     {
         return IdentityInfo.builder()
                 .id(Helper.generateId())
-                .uan(request.getUan())
-                .pan(request.getPan())
-                .aadhar(request.getAadhar())
+                .documentType(request.getDocumentType())
+                .documentNumber(request.getDocumentNumber())
+                .status("Pending Verification")
+                .fileName(request.getFileName())
+                .fileType(request.getFileType())
                 .isActive(true)
                 .deleted(false)
                 .build();
@@ -22,9 +24,13 @@ public class IdentityInfoMapper
     public static IdentityInfoResponse identityInfoIntoIdentityInfoResponse(IdentityInfo identityInfo)
     {
         return IdentityInfoResponse.builder()
-                .uan(identityInfo.getUan())
-                .pan(identityInfo.getPan())
-                .aadhar(identityInfo.getAadhar())
+                .id(identityInfo.getId())
+                .documentNumber(identityInfo.getDocumentNumber())
+                .documentType(identityInfo.getDocumentType())
+                .status(identityInfo.getStatus())
+                .fileName(identityInfo.getFileName())
+                .fileType(identityInfo.getFileType())
+                .remark(identityInfo.getRemarks())
                 .build();
     }
 }

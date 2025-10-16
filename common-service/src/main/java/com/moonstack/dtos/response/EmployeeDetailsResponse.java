@@ -14,10 +14,12 @@ import java.util.List;
 public class EmployeeDetailsResponse
 {
     private UserResponse userResponse;
+    private FileUploadResponse resume;
+    private FileUploadResponse profilePhoto;
     private WorkInfoResponse workInfo;
     private List<HierarchyInfoResponse> hierarchyInfos;
     private PersonalDetailResponse personalDetail;
-    private IdentityInfoResponse identityInfo;
+    private List<IdentityInfoResponse> identityInfo;
     private ContactDetailResponse contactDetail;
     private SystemFieldResponse systemField;
     private List<WorkExperienceResponse> workExperience;
