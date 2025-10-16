@@ -4,6 +4,7 @@ import com.moonstack.response.ApiResponse;
 import com.moonstack.constants.Message;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -41,6 +42,18 @@ public class GlobalExceptionHandler
                 .data(Message.FAIL)
                 .build();
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ApiResponse<Object>> handleBadCredentialsException(BadCredentialsException e)
+    {
+        ApiResponse<Object> response = ApiResponse.builder()
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .message(e.getMessage())
+                .data(Message.FAIL)
+                .multiple(false)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(InvalidSessionException.class)

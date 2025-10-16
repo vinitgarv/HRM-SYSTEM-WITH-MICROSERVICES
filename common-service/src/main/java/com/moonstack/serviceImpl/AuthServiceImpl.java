@@ -5,6 +5,7 @@ import com.moonstack.dtos.request.*;
 import com.moonstack.dtos.response.AuthResponse;
 import com.moonstack.dtos.response.UserInfo;
 import com.moonstack.entity.*;
+import com.moonstack.enums.RolesEnum;
 import com.moonstack.exception.*;
 import com.moonstack.repository.DeviceDataRepository;
 import com.moonstack.repository.RefreshTokenRepository;
@@ -78,6 +79,59 @@ public class AuthServiceImpl implements AuthService
         {
             throw new AlreadyPresentException(Message.EMAIL+Message.TAB+Message.ALREADY+Message.TAB+Message.PRESENT+Message.DOT);
         }
+
+        User user = new User();
+        user.setId(Helper.generateId());
+        user.setEmail(request.getEmail());
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setTempPassword(Helper.generateRandomPassword());
+        user.setAccType(Message.INITIATED);
+
+        if (request.getRoles() != null)
+        {
+            for (String roleName : request.getRoles())
+            {
+                Role r = new Role();
+                r.setId(Helper.generateId());
+                r.setName(roleName);
+                user.addRole(r);
+            }
+        }
+
+        String changePasswordLink = "http://localhost:3000/changepassword/"+user.getId()+"?tempPassword=" + user.getTempPassword();
+
+        String emailBody =replacePlaceHoldersForChangePassword(user, changePasswordLink);
+
+        EmailRequest emailRequest = EmailRequest.builder()
+                .to(request.getEmail())
+                .subject("HRM System : Change Password")
+                .message(emailBody)
+                .build();
+
+        new Thread(() ->
+        {
+            emailService.sendEmail(emailRequest);
+        }).start();
+        userRepository.save(user);
+    }
+
+    @Override
+    public void registerSuperAdmin(RegisterRequest request)
+    {
+        request.validate();
+        if(userRepository.existsByEmail(request.getEmail()))
+        {
+            throw new AlreadyPresentException(Message.EMAIL+Message.TAB+Message.ALREADY+Message.TAB+Message.PRESENT+Message.DOT);
+        }
+
+        if (request.getRoles().stream().noneMatch(r -> r.equalsIgnoreCase(RolesEnum.SUPER_ADMIN.getRole())))
+        {
+            throw new RequestFailedException("Only SUPER_ADMIN role is allowed to register");
+        }
+
+
+
         User user = new User();
         user.setId(Helper.generateId());
         user.setEmail(request.getEmail());
@@ -210,11 +264,13 @@ public class AuthServiceImpl implements AuthService
             user.getDeviceData().add(deviceData);
             userRepository.save(user);
 
+            Role role = user.getRoles().stream().findFirst().orElse(null);
 
             UserInfo userInfo = UserInfo.builder()
                     .userId(user.getId())
                     .name(user.getFirstName()+" "+user.getLastName())
                     .email(user.getEmail())
+                    .role(role.getName())
                     .build();
 
             return AuthResponse.builder()

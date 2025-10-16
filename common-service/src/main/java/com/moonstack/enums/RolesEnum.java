@@ -8,10 +8,11 @@ import java.util.Arrays;
 public enum RolesEnum
 {
 
-    USER("user"),
+    EMPLOYEE("employee"),
     ADMIN("admin"),
     SUPER_ADMIN("super admin"),
-    HR("hr");
+    HR("hr"),
+    FINANCE("finance");
 
     private final String role;
 

@@ -72,6 +72,18 @@ public class AuthController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
+    @PostMapping("/register/super-admin")
+    public ResponseEntity<ApiResponse<String>> registerSuperAdmin(@RequestBody RegisterRequest request) {
+        authService.registerSuperAdmin(request);
+        ApiResponse<String> response = ApiResponse.<String>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message(Message.SUCCESS)
+                .multiple(Message.FALSE)
+                .data(Message.USER+Message.TAB+Message.REGISTERED+Message.TAB+Message.SUCCESSFULLY+Message.DOT)
+                .build();
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
     @GetMapping("/logout")
     public ResponseEntity<ApiResponse<String>> logout() {
         String token  = jwtTokenUtil.extractToken(request);

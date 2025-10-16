@@ -4,6 +4,7 @@ import in.hrm.handler.CustomAccessDeniedHandler;
 import in.hrm.handler.CustomAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -37,25 +38,29 @@ public class SecurityConfig {
                 .authenticationManager(authenticationManager)
                 .securityContextRepository(securityContextRepository)
                 .authorizeExchange(exchanges -> exchanges
+                        .pathMatchers(HttpMethod.OPTIONS).permitAll()
                         .pathMatchers(
                                 "/common/auth/login",
-                                "/common/auth/register",
                                 "/common/auth/refresh-token",
                                 "/common/auth/change-password/**",
                                 "/common/employeedetails/**",
                                 "/common/message/**",
                                 "/common/auth/forgot-password/**",
                                 "/common/auth/reset-password/**",
-                                "/common/upload/**"
+                                "/common/upload/**",
+                                "/common/auth/register/super-admin"
+                              //  "/common/auth/register"
                         ).permitAll()
 
+                        .pathMatchers("/common/auth/register")
+                        .hasAnyAuthority("ROLE_ADMIN","ROLE_SUPER_ADMIN")
 
                         .pathMatchers("/common/user/log-in-users/**",
                                 "/common/user/total-log-in-users/**",
                                 "/common/user/logout/**",
                                 "/hrops/employee-leave/**",
                                 "/payroll/expense/**")
-                        .hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_SUPER_ADMIN")
+                        .hasAnyAuthority("ROLE_EMPLOYEE","ROLE_ADMIN","ROLE_SUPER_ADMIN")
 
                         .pathMatchers("/common/auth/logout",
                                 "/common/user/token-response/**",
