@@ -60,7 +60,7 @@ public class SecurityConfig {
                                 "/common/user/logout/**",
                                 "/hrops/employee-leave/**",
                                 "/payroll/expense/**")
-                        .hasAnyAuthority("ROLE_EMPLOYEE","ROLE_ADMIN","ROLE_SUPER_ADMIN")
+                        .hasAnyAuthority("ROLE_EMPLOYEE","ROLE_ADMIN","ROLE_SUPER_ADMIN","ROLE_HR")
 
                         .pathMatchers("/common/auth/logout",
                                 "/common/user/token-response/**",
@@ -71,7 +71,7 @@ public class SecurityConfig {
                                 "/hrops/attendance-approval/**",
                                 "/hrops/overtime/**",
                                 "/hrops/holiday/**")
-                        .hasAuthority("ROLE_ADMIN")
+                        .hasAnyAuthority("ROLE_ADMIN","ROLE_HR")
                         // everything else must be  v
                         .anyExchange().authenticated()
                 )
