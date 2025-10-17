@@ -31,4 +31,17 @@ public class Message
         public static String  DELETED = "deleted";
         public static String  REQUEST = "request";
         public static String  FAILED = "failed";
+        public static String  BASE_SALARY = "base salary";
+        public static String  ZERO = "0";
+        public static String  CANNOT = "cannot";
+        public static String  LESS = "less";
+        public static String  BE = "be";
+        public static String  OR = "or";
+        public static String  THAN = "than";
+        public static String  EQUAL = "equal";
+        public static String  ALLOWANCES = "allowances";
+        public static String  TO = "to";
+        public static String  DEDUCTIONS = "deductions";
+        public static String  TAX_AMOUNT = "tax amounts";
+        public static String  ACCOUNT_NUMBER = "account number";
 }
