@@ -28,7 +28,7 @@ public class EmployeeDetailController {
     private IdentityInfoService identityInfoService;
 
     // TODO Remove add from the endpoint
-    @PostMapping("/add/{userId}")
+    @PostMapping("/{userId}")
     public ResponseEntity<ApiResponse<String>> add(@RequestBody EmployeeDetailsRequest request, @PathVariable String userId)
     {
         ApiResponse<String> response = ApiResponse.<String>builder()
@@ -40,7 +40,7 @@ public class EmployeeDetailController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @PutMapping("/update/{userId}")
+    @PutMapping("/{userId}")
     public ResponseEntity<ApiResponse<EmployeeDetailsResponse>> update(@RequestBody EmployeeDetailsRequest request, @PathVariable String userId)
     {
         ApiResponse<EmployeeDetailsResponse> response = ApiResponse.<EmployeeDetailsResponse>builder()
@@ -52,7 +52,7 @@ public class EmployeeDetailController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @GetMapping("/getById/{userId}")
+    @GetMapping("/{userId}")
 
     public ResponseEntity<ApiResponse<EmployeeDetailsResponse>> getById( @PathVariable String userId)
     {
@@ -128,7 +128,7 @@ public class EmployeeDetailController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete-document/{employeeId}")
+    @DeleteMapping("/{employeeId}")
     public ResponseEntity<ApiResponse<String>> deleteDocument(
             @PathVariable String employeeId,
             @RequestParam String fileName) {

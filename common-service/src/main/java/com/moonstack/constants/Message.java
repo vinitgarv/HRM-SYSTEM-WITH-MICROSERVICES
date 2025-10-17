@@ -126,6 +126,10 @@ public class Message
     public static String  SYSTEM_FIELD = "System Field";
     public static String  CONTACT_DETAIL = "Contact Detail";
 
+    public static String  MULTIPLE = "multiple";
+    public static String  ROLES = "roles";
+    public static String  ALLOWED = "allowed";
+
     // placeholders
     public static String  USER_NAME_PLACEHOLDER = "<USER_NAME>";
     public static String  URL_PLACEHOLDER = "<URL>";

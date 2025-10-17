@@ -71,7 +71,12 @@ public class RegisterRequest {
 
     private void validateRoles(Set<String> roles,String fieldName)
     {
-        if (roles.isEmpty() || roles == null)
+        if(roles.size() > 1)
+        {
+            throw new RequestFailedException(Message.MULTIPLE+Message.TAB+Message.ROLES+Message.TAB+Message.NOT+Message.TAB+Message.ALLOWED+Message.DOT);
+        }
+
+        if (roles.isEmpty())
         {
             throw new RequestFailedException(fieldName+Message.TAB+Message.IS+Message.TAB+Message.REQUIRED+Message.DOT);
         }
