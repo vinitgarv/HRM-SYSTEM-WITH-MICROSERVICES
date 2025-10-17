@@ -19,15 +19,6 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private JwtUtil jwtTokenUtil;
-
-    @Autowired
-    private HttpServletRequest request;
-
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AuthResponse>> login(@RequestBody AuthRequest authRequest, HttpServletRequest request) {
         ApiResponse<AuthResponse> response = ApiResponse.<AuthResponse>builder()
@@ -71,16 +62,12 @@ public class AuthController {
                 .build();
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
-
     @GetMapping("/logout")
-    public ResponseEntity<ApiResponse<String>> logout() {
-        String token  = jwtTokenUtil.extractToken(request);
-        String userId = jwtTokenUtil.extractUserId(token);
-        String sessionId = jwtTokenUtil.extractSessionId(token);
+    public ResponseEntity<ApiResponse<String>> logout(HttpServletRequest request) {
         return ResponseEntity.ok(ApiResponse.<String>builder()
                 .statusCode(HttpStatus.OK.value())
                 .message("success")
-                .data(authService.logout(userId,sessionId,request))
+                .data(authService.logout(request))
                 .build());
     }
 

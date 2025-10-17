@@ -307,8 +307,11 @@ public class AuthServiceImpl implements AuthService
 
 
     @Override
-    public String logout(String userId,String sessionId,HttpServletRequest request)
+    public String logout(HttpServletRequest request)
     {
+        String token  = jwtTokenUtil.extractToken(request);
+        String userId = jwtTokenUtil.extractUserId(token);
+        String sessionId = jwtTokenUtil.extractSessionId(token);
         String reason =null;
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
