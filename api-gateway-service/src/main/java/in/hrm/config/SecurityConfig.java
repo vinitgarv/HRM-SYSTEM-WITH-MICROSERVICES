@@ -35,6 +35,7 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
+                .cors(cors -> {})
                 .authenticationManager(authenticationManager)
                 .securityContextRepository(securityContextRepository)
                 .authorizeExchange(exchanges -> exchanges
@@ -59,6 +60,7 @@ public class SecurityConfig {
                                 "/common/user/total-log-in-users/**",
                                 "/common/user/logout/**",
                                 "/hrops/employee-leave/**",
+                                "/common/auth/logout",
                                 "/payroll/expense/**")
                         .hasAnyAuthority("ROLE_EMPLOYEE","ROLE_ADMIN","ROLE_SUPER_ADMIN","ROLE_HR")
 

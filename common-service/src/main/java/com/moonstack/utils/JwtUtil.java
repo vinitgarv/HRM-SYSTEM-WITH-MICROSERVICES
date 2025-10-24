@@ -109,7 +109,7 @@ public class JwtUtil {
                 .claim("deviceId",deviceData.getDeviceId())
                 .claim("deviceName",deviceData.getDeviceName())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 )) // 1 hour
                 .signWith(getKey(), SignatureAlgorithm.HS512)
                 .compact();
     }

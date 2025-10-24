@@ -33,7 +33,6 @@ public class CustomAuthenticationEntryPoint implements ServerAuthenticationEntry
         try {
             apiResponseJson = objectMapper.writeValueAsString(apiResponse);
         } catch (JsonProcessingException ex) {
-            // fallback to hardcoded response if serialization fails
             apiResponseJson = json;
         }
 
