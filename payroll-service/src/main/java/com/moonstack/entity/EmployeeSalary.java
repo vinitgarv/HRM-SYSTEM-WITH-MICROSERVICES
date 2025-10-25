@@ -26,6 +26,8 @@ public class EmployeeSalary extends AbstractPersistable
     private Double deductions;
     private Double taxAmounts;
     private Double netSalary;
+
+    private String bankName;
     private String accountNumber;
     private String userId;
 

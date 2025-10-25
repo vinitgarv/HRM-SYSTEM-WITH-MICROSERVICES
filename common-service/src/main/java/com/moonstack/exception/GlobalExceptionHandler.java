@@ -16,6 +16,7 @@ public class GlobalExceptionHandler
         ApiResponse<Object> response = ApiResponse.builder()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .message(e.getMessage())
+                .multiple(false)
                 .data(Message.FAIL)
                 .build();
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -27,6 +28,7 @@ public class GlobalExceptionHandler
         ApiResponse<Object> response = ApiResponse.builder()
                 .statusCode(HttpStatus.NOT_FOUND.value())
                 .message(e.getMessage())
+                .multiple(false)
                 .data(Message.FAIL)
                 .build();
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
@@ -38,6 +40,7 @@ public class GlobalExceptionHandler
         ApiResponse<Object> response = ApiResponse.builder()
                 .statusCode(HttpStatus.CONFLICT.value())
                 .message(e.getMessage())
+                .multiple(false)
                 .data(Message.FAIL)
                 .build();
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
@@ -83,6 +86,7 @@ public class GlobalExceptionHandler
                 .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .data(Message.FAIL)
                 .message(e.getMessage())
+                .multiple(false)
                 .build();
         return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
     }

@@ -66,6 +66,17 @@ public class GlobalExceptionHandler
         return new ResponseEntity<>(response,HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ApiResponse<Object>> handleForbiddenException(ForbiddenException e) {
+        ApiResponse<Object> response = ApiResponse.builder()
+                .statusCode(HttpStatus.FORBIDDEN.value())
+                .message(Message.FAILURE)
+                .multiple(Message.FALSE)
+                .data(e.getMessage())
+                .build();
+        return new ResponseEntity<>(response,HttpStatus.FORBIDDEN);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Object>> handleException(Exception e) {
         ApiResponse<Object> response = ApiResponse.builder()

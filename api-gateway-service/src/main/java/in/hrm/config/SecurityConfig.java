@@ -39,16 +39,23 @@ public class SecurityConfig {
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers(
                                 "/common/auth/login",
-                                "/common/auth/register",
                                 "/common/auth/refresh-token",
                                 "/common/auth/change-password/**",
                                 "/common/employeedetails/**",
                                 "/common/message/**",
                                 "/common/auth/forgot-password/**",
                                 "/common/auth/reset-password/**",
-                                "/common/upload/**"
+                                "/common/upload/**",
+                                "/common/auth/register/super-admin"
                         ).permitAll()
 
+
+                        .pathMatchers("/common/auth/register")
+                        .hasAnyAuthority("ROLE_ADMIN","ROLE_SUPER_ADMIN")
+
+
+                        .pathMatchers("/payroll/emp-salary/**")
+                        .hasAnyAuthority("ROLE_ADMIN","ROLE_SUPER_ADMIN")
 
                         .pathMatchers("/common/user/log-in-users/**",
                                 "/common/user/total-log-in-users/**",

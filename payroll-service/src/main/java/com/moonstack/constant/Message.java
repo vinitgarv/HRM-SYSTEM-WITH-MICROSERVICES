@@ -44,4 +44,7 @@ public class Message
         public static String  DEDUCTIONS = "deductions";
         public static String  TAX_AMOUNT = "tax amounts";
         public static String  ACCOUNT_NUMBER = "account number";
+        public static String  INVALID = "invalid";
+        public static String  BANK_NAME = "bank name";
+        public static String  EMPTY = "empty";
 }

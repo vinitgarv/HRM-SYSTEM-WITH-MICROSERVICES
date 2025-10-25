@@ -103,7 +103,7 @@ public class JwtUtil {
                 .setSubject(username)
                 .claim("userId", userId)
                 .claim("roles", roles.stream()
-                        .map(role -> role.replace("Role : ", "").trim()) // clean roles
+                        .map(role -> role.replace("Role : ", "").trim().toUpperCase().replace(" ", "_"))
                         .toList())
                 .claim("sessionId",userSessionData.getId())
                 .claim("deviceId",deviceData.getDeviceId())

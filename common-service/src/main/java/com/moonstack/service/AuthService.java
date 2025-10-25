@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletRequest;
 public interface AuthService
 {
     void register(RegisterRequest request);
+
+    void registerSuperAdmin(RegisterRequest request);
     AuthResponse login(AuthRequest authRequest, HttpServletRequest request);
     AuthResponse refreshToken(RefreshTokenRequest request);
     String logout(HttpServletRequest request);
