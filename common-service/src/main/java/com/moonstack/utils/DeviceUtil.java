@@ -7,31 +7,31 @@ import java.security.NoSuchAlgorithmException;
 
 public class DeviceUtil
 {
-    public static String generateDeviceId(HttpServletRequest request)
-    {
-        try
-        {
+    public static String generateDeviceId(HttpServletRequest request) {
+        try {
             String ip = getClientIp(request);
             String userAgent = request.getHeader("User-Agent");
+            String acceptLang = request.getHeader("Accept-Language");
+            String encoding = request.getHeader("Accept-Encoding");
+            String secChUa = request.getHeader("Sec-CH-UA");  // optional, more uniqueness
 
-           // String rawData = userAgent;
+            String rawData = userAgent + "|" + ip + "|" + acceptLang + "|" + encoding + "|" + secChUa;
+
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(userAgent.getBytes(StandardCharsets.UTF_8));
+            byte[] hash = digest.digest(rawData.getBytes(StandardCharsets.UTF_8));
 
             StringBuilder hexString = new StringBuilder();
-            for (byte b : hash)
-            {
+            for (byte b : hash) {
                 String hex = Integer.toHexString(0xff & b);
                 if (hex.length() == 1) hexString.append('0');
                 hexString.append(hex);
             }
             return hexString.toString();
-        }
-        catch (NoSuchAlgorithmException e)
-        {
+        } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("Error generating Device ID", e);
         }
     }
+
 
     public static String getDeviceName(HttpServletRequest request)
     {

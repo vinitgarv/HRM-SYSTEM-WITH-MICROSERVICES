@@ -8,7 +8,6 @@ import com.moonstack.entity.*;
 import com.moonstack.enums.RolesEnum;
 import com.moonstack.exception.*;
 import com.moonstack.repository.DeviceDataRepository;
-import com.moonstack.repository.RefreshTokenRepository;
 import com.moonstack.repository.UserRepository;
 import com.moonstack.repository.UserSessionDataRepository;
 import com.moonstack.security.CustomUserDetailsService;
@@ -27,9 +26,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,12 +56,6 @@ public class AuthServiceImpl implements AuthService
     private CustomUserDetailsService customUserDetailsService;
 
     @Autowired
-    private RefreshTokenService refreshTokenService;
-
-    @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
-
-    @Autowired
     private SessionLogsService sessionLogsService;
 
     @Autowired
@@ -70,6 +63,7 @@ public class AuthServiceImpl implements AuthService
 
     @Autowired
     private UserService userService;
+
 
     @Override
     public void register(RegisterRequest request)
@@ -99,7 +93,7 @@ public class AuthServiceImpl implements AuthService
             }
         }
 
-        String changePasswordLink = "http://localhost:3000/changepassword/"+user.getId()+"?tempPassword=" + user.getTempPassword();
+        String changePasswordLink = "http://192.168.0.12:4200/changePassword/"+user.getId()+"?tempPassword=" + user.getTempPassword();
 
         String emailBody =replacePlaceHoldersForChangePassword(user, changePasswordLink);
 
@@ -130,8 +124,6 @@ public class AuthServiceImpl implements AuthService
             throw new RequestFailedException("Only SUPER_ADMIN role is allowed to register");
         }
 
-
-
         User user = new User();
         user.setId(Helper.generateId());
         user.setEmail(request.getEmail());
@@ -151,7 +143,7 @@ public class AuthServiceImpl implements AuthService
             }
         }
 
-        String changePasswordLink = "http://localhost:3000/changepassword/"+user.getId()+"?tempPassword=" + user.getTempPassword();
+        String changePasswordLink = "http://192.168.0.12:4200/changePassword/"+user.getId()+"?tempPassword=" + user.getTempPassword();
 
         String emailBody =replacePlaceHoldersForChangePassword(user, changePasswordLink);
 
@@ -171,6 +163,8 @@ public class AuthServiceImpl implements AuthService
     @Override
     public AuthResponse login(AuthRequest authRequest, HttpServletRequest request)
     {
+          LocalDateTime refreshTokenExpiryTime = LocalDateTime.now().plusMinutes(2);
+
         User user = null;
         String accessToken = null;
         String refreshTokenValue = null;
@@ -184,7 +178,7 @@ public class AuthServiceImpl implements AuthService
             user = userRepository.findByEmail(authRequest.getEmail())
                     .orElseThrow(() -> new NotFoundException("User not found"));
 
-            if (userService.getCountOfAllLogedInUsers(user.getId())==2)
+            if (userService.getCountOfAllLogedInUsers(user.getId())==10)
                 throw new ForbiddenException("DEVICE_LIMIT_EXCEED","Login denied: Only two devices are allowed per user.");
 
             // Device info
@@ -232,6 +226,7 @@ public class AuthServiceImpl implements AuthService
                 userSessionData = existingUserSessionData.get();
                 userSessionData.setIsActive(true);
                 userSessionData.setDeleted(false);
+                userSessionData.setRefreshTokenExpiry(refreshTokenExpiryTime);
                 userSessionData.setDeviceData(deviceData);
                 userSessionData.setUser(user);
             }
@@ -241,6 +236,7 @@ public class AuthServiceImpl implements AuthService
                         .id(Helper.generateId())
                         .user(user)
                         .deviceData(deviceData)
+                        .refreshTokenExpiry(refreshTokenExpiryTime)
                         .isActive(true)
                         .deleted(false)
                         .build();
@@ -252,8 +248,7 @@ public class AuthServiceImpl implements AuthService
                     .collect(Collectors.toSet());
 
             accessToken = jwtTokenUtil.generateJwtToken(userDetails.getUsername(), user.getId(), roles,userSessionData,deviceData);
-            RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
-            refreshTokenValue = refreshToken.getToken();
+            refreshTokenValue = UUID.randomUUID().toString();
 
             userSessionData.setAccessToken(accessToken);
             userSessionData.setRefreshToken(refreshTokenValue);
@@ -316,23 +311,18 @@ public class AuthServiceImpl implements AuthService
     @Override
     public AuthResponse refreshToken(RefreshTokenRequest request)
     {
-        String requestRefreshToken = request.getRefreshToken();
+        UserSessionData userSessionData = userSessionDataRepository.findByRefreshToken(request.getRefreshToken())
+                .orElseThrow(() ->new InvalidSessionException("REFRESH_TOKEN_EXPIRED","Refresh Token has expired. Please log in again."));
 
-        // Fetch and validate refresh token
-        RefreshToken refreshToken = refreshTokenService.findByToken(requestRefreshToken)
-                .map(refreshTokenService::verifyExpiration)
-                .orElseThrow(() -> new ForbiddenException("REFRESH_TOKEN_EXPIRED","Refresh Token has expired. Please log in again."));
+        DeviceData deviceData = userSessionData.getDeviceData();
+        if(isExpired(userSessionData.getRefreshTokenExpiry()))
+        {
+            deviceDataRepository.delete(deviceData);
+            userSessionDataRepository.delete(userSessionData);
+            throw new InvalidSessionException("REFRESH_TOKEN_EXPIRED", "Refresh Token has expired. Please log in again.");
+        }
 
-        // Get the user and session linked to this refresh token
-        User user = refreshToken.getUser();
-
-        // Find the UserSessionData that matches this refresh token
-        UserSessionData sessionData = user.getUserSessionData().stream()
-                .filter(s -> requestRefreshToken.equals(s.getRefreshToken()))
-                .findFirst()
-                .orElseThrow(() -> new ForbiddenException("SESSION_NOT_FOUND","Refresh Token has expired. Please log in again."));
-
-        DeviceData deviceData = sessionData.getDeviceData();
+        User user = userService.getById(userSessionData.getUser().getId());
 
         // Load user details
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(user.getEmail());
@@ -346,18 +336,18 @@ public class AuthServiceImpl implements AuthService
                 userDetails.getUsername(),
                 user.getId().toString(),
                 roles,
-                sessionData,
+                userSessionData,
                 deviceData
         );
 
         // Update session record with new access token
-        sessionData.setAccessToken(newAccessToken);
-        userSessionDataRepository.save(sessionData);
+        userSessionData.setAccessToken(newAccessToken);
+        userSessionDataRepository.save(userSessionData);
 
         // Return the new access token along with the same refresh token
         return AuthResponse.builder()
                 .token(newAccessToken)
-                .refreshToken(requestRefreshToken)
+                .refreshToken(request.getRefreshToken())
                 .build();
     }
 
@@ -377,18 +367,10 @@ public class AuthServiceImpl implements AuthService
                 .orElseThrow(() -> new NotFoundException("Device Data not found"));
         try
         {
-            RefreshToken refreshToken = refreshTokenRepository.findByUser(user)
-                    .orElseThrow(() -> new NotFoundException("Invalid Refresh Token"));
-            refreshToken.setToken(null);
-            refreshToken.setExpiryDate(null);
-            refreshToken.setUpdatedAt(LocalDateTime.now());
-
             userSessionDataRepository.delete(sessionData);
             deviceDataRepository.delete(deviceData);
 
             userRepository.save(user);
-
-            refreshTokenRepository.save(refreshToken);
         }
         catch (Exception ex)
         {
@@ -446,7 +428,7 @@ public class AuthServiceImpl implements AuthService
     {
         User user = userService.findByEmail(request.getEmail());
 
-        String forgotPasswordLink = "http://localhost:3000/resetPassword/"+user.getId();
+        String forgotPasswordLink = "http://192.168.0.12:4200/resetPassword/"+user.getId();
 
         String emailBody =replacePlaceHoldersForForgotPassword(user, forgotPasswordLink);
 
@@ -774,5 +756,10 @@ public class AuthServiceImpl implements AuthService
                 "\n" +
                 "</body>\n" +
                 "</html>\n";
+    }
+
+    private boolean isExpired(LocalDateTime token)
+    {
+           return token.isBefore(LocalDateTime.now());
     }
 }

@@ -44,6 +44,7 @@ public class AuthController {
         AuthResponse response = authService.refreshToken(request);
         return ResponseEntity.ok(ApiResponse.<AuthResponse>builder()
                 .statusCode(HttpStatus.OK.value())
+                        .multiple(false)
                 .message("Token refreshed successfully")
                 .data(response)
                 .build());
@@ -93,6 +94,7 @@ public class AuthController {
                 .statusCode(HttpStatus.OK.value())
                 .message("success")
                 .data(authService.logout(userId,sessionId,request))
+                .multiple(false)
                 .build());
     }
 

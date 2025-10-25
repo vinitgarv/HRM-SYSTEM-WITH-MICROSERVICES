@@ -59,12 +59,12 @@ public class GlobalExceptionHandler
     @ExceptionHandler(InvalidSessionException.class)
     public ResponseEntity<ApiResponse<Object>> handleException(InvalidSessionException e) {
         ApiResponse<Object> response = ApiResponse.builder()
-                .statusCode(HttpStatus.UNAUTHORIZED.value())
-                .message(Message.FAILURE)
+                .statusCode(HttpStatus.FORBIDDEN.value())
+                .message(e.getData())
                 .multiple(Message.FALSE)
                 .data(e.getMessage())
                 .build();
-        return new ResponseEntity<>(response,HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(response,HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(UnauthorizedException.class)

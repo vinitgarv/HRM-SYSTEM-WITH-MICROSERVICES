@@ -1,7 +1,14 @@
 package com.moonstack.exception;
 
 public class InvalidSessionException extends RuntimeException {
-    public InvalidSessionException(String msg) {
-        super(msg);
+    private final String data;
+
+    public InvalidSessionException(String message, String data) {
+        super(message);
+        this.data = data;
+    }
+
+    public String getData() {
+        return data;
     }
 }

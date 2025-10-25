@@ -18,8 +18,6 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@SQLDelete(sql = "UPDATE DEVICE_DATA SET IS_DELETED = 1 WHERE id = ?")
-@Where(clause = "IS_DELETED = false")
 public class DeviceData extends AbstractPersistable
 {
         private String deviceName;

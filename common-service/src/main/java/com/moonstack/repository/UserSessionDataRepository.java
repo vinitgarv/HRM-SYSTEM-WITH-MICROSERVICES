@@ -12,4 +12,6 @@ public interface UserSessionDataRepository extends JpaRepository<UserSessionData
     Optional<UserSessionData> findByUserAndDeviceData(User user, DeviceData deviceData);
 
     Optional<UserSessionData> findByDeviceData(DeviceData deviceData);
+
+    Optional<UserSessionData> findByRefreshToken(String token);
 }
