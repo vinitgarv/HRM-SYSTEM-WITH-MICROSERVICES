@@ -64,7 +64,7 @@ public class EmployeeDetailController {
                 .build();
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
-//
+
 //    @PostMapping(value = "/upload-document/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 //    public ResponseEntity<ApiResponse<FileUploadResponse>> uploadDocument(
 //            @RequestPart("file") MultipartFile file,
@@ -87,9 +87,7 @@ public class EmployeeDetailController {
     public ResponseEntity<ApiResponse<FileUploadResponse>> uploadDocument(
             @RequestPart("file") MultipartFile file,
             @PathVariable String userId,
-            @RequestPart("body") Map<String, String> body) {
-
-        String type = body.get("type");
+            @RequestPart("type") String type) {
 
         FileUploadResponse fileResponse = employeeDetailsService.uploadDocument(file, userId, type);
 

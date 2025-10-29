@@ -163,7 +163,8 @@ public class AuthServiceImpl implements AuthService
     @Override
     public AuthResponse login(AuthRequest authRequest, HttpServletRequest request)
     {
-          LocalDateTime refreshTokenExpiryTime = LocalDateTime.now().plusMinutes(2);
+        LocalDateTime refreshTokenExpiryTime = LocalDateTime.now().plusMinutes(7 * 24 * 60);
+
 
         User user = null;
         String accessToken = null;
@@ -406,8 +407,13 @@ public class AuthServiceImpl implements AuthService
     {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
-        if (!user.getTempPassword().equals(changePasswordRequest.getOldPassword()))
-        {
+//
+//        if (!user.getTempPassword().equals(changePasswordRequest.getOldPassword()))
+//        {
+//            throw new IllegalArgumentException("Old password is incorrect");
+//        }
+
+        if (!changePasswordRequest.getOldPassword().equals(user.getTempPassword())) {
             throw new IllegalArgumentException("Old password is incorrect");
         }
 

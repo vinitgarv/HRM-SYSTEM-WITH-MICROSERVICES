@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FileUploadResponse {
-    private String fileName;
-    private String fileType;
+    private String name;
+    private String type;
 }

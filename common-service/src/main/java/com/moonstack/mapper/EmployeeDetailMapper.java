@@ -26,15 +26,15 @@ public class EmployeeDetailMapper {
 
                 .profilePhoto(
                         FileUploadResponse.builder()
-                                .fileName(user.getProfilePhotoFileName())
-                                .fileType(user.getResumeFileType())
+                                .name(user.getProfilePhotoFileName())
+                                .type(user.getResumeFileType())
                                 .build()
                 )
 
                 .resume(
                         FileUploadResponse.builder()
-                                .fileName(user.getResumeFileName())
-                                .fileType(user.getResumeFileType())
+                                .name(user.getResumeFileName())
+                                .type(user.getResumeFileType())
                                 .build()
                 )
 

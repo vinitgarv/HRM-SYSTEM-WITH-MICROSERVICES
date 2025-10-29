@@ -244,8 +244,8 @@ public class EmployeeDetailsServiceImpl implements EmployeeDetailsService {
             String filenameWithoutExtension = newFilename.substring(0, newFilename.lastIndexOf('.'));
 
             return FileUploadResponse.builder()
-                    .fileName(filenameWithoutExtension)
-                    .fileType(fileType)
+                    .name(filenameWithoutExtension)
+                    .type(fileType)
                     .build();
         } catch (IOException e) {
             throw new RuntimeException("Failed to upload file: " + e.getMessage(), e);
